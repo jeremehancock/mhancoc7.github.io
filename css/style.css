@@ -395,8 +395,4 @@ section:last-child {
         margin-left: calc(100vw - 100%);
         margin-right: 0;
     }
-	
-    .sectionContent a:hover {
-        color: inherit;
-    }
 }
