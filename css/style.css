@@ -118,7 +118,7 @@ p {
 }
 
 section {
-	border-top: 1px solid #dedede;
+	//border-top: 1px solid #dedede;
 	padding: 20px 0 0;
 }
 
@@ -133,6 +133,7 @@ section:last-child {
 .sectionTitle {
 	float: left;
 	width: 35%;
+	margin-bottom: 10px;
 }
 
 .sectionContent {
@@ -393,5 +394,9 @@ section:last-child {
     html {
         margin-left: calc(100vw - 100%);
         margin-right: 0;
+    }
+	
+    .sectionContent a:hover {
+        color: inherit;
     }
 }
