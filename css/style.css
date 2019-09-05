@@ -13,6 +13,11 @@ display:block;
 
 html, body {background: #181818; font-family: 'Lato', helvetica, arial, sans-serif; font-size: 16px; color: #222;}
 
+html {
+    margin-left: calc(100vw - 100%);
+    margin-right: 0;
+}
+
 .clear {clear: both;}
 
 p {
@@ -382,4 +387,11 @@ section:last-child {
 	-webkit-animation-delay: 0, 2.5s;
 	-moz-animation-delay: 0, 2.5s;
 	animation-delay: 0, 2.5s;
+}
+
+@media screen and (min-width: 150px) {
+    html {
+        margin-left: calc(100vw - 100%);
+        margin-right: 0;
+    }
 }
