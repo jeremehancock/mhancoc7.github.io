@@ -29,7 +29,7 @@ p {
 
 #cv {
 	width: 90%;
-	max-width: 800px;
+	max-width: 1600px;
 	background: #f3f3f3;
 	margin: 30px auto;
 }
@@ -41,7 +41,7 @@ p {
 }
 
 #name h1 {
-	font-size: 2.2em;
+	font-size: 3.2em;
 	font-weight: 700;
 	font-family: 'Rokkitt', Helvetica, Arial, sans-serif;
 	margin-bottom: -6px;
@@ -66,11 +66,12 @@ p {
 #headshot img {
 	width: 100%;
 	height: auto;
-	-webkit-border-radius: 50px;
-	border-radius: 50px;
+	border-radius: 50%;
 }
 
 #name {
+	margin-top: 2%;
+	margin-bottom: 2%;
 	float: left;
 }
 
@@ -85,8 +86,13 @@ p {
 }
 
 #contactDetails ul li {
-	margin-bottom: 3px;
+	margin-bottom: 10px;
 	color: #444;
+}
+
+#contactDetails ul li span{
+	font-weight: bold;
+	font-size: 1.2em;
 }
 
 #contactDetails ul li a, a[href^=tel] {
@@ -132,14 +138,14 @@ section:last-child {
 
 .sectionTitle {
 	float: left;
-	width: 35%;
+	/*width: 35%;*/
 	margin-bottom: 10px;
 }
 
 .sectionContent {
 	float: right;
 	width: 72.5%;
-        display: none;
+	display: none;
 }
 
 .sectionTitle h1 {
@@ -150,6 +156,31 @@ section:last-child {
 }
 
 .sectionContent h2 {
+	font-family: 'Rokkitt', Helvetica, Arial, sans-serif;
+	font-size: 1.5em;
+	margin-bottom: -2px;
+}
+
+.sectionTitle2 {
+	/*float: left;*/
+	/*width: 35%;*/
+	margin-bottom: 10px;
+}
+
+.sectionContent2 {
+	/*float: right;*/
+	/*width: 72.5%;*/
+	display: none;
+}
+
+.sectionTitle2 h1 {
+	font-family: 'Rokkitt', Helvetica, Arial, sans-serif;
+	font-style: italic;
+	font-size: 1.5em;
+	color: #cf8a05;
+}
+
+.sectionContent2 h2 {
 	font-family: 'Rokkitt', Helvetica, Arial, sans-serif;
 	font-size: 1.5em;
 	margin-bottom: -2px;
@@ -195,6 +226,7 @@ section:last-child {
 	-webkit-column-count:2;
 	column-count:2;
 	}
+
 }
 
 @media all and (max-width: 601px) {
@@ -235,6 +267,7 @@ section:last-child {
 		-webkit-column-count:2;
 		column-count:2;
 	}
+
 }
 
 @media all and (max-width: 480px) {
@@ -395,4 +428,46 @@ section:last-child {
         margin-left: calc(100vw - 100%);
         margin-right: 0;
     }
+}
+
+.flex-container {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-around;
+}
+.flex-container > div {
+	width: 370px;
+	margin: 35px;
+}
+.card {
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+	padding: 16px;
+	text-align: center;
+	background-color: #f1f1f1;
+	transition: transform .2s;
+}
+.card:hover {
+	cursor: pointer;
+	transform: scale(1.1);
+}
+img {
+	width: 100%;
+	height: auto;
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+	.flex-container > div {
+		margin: 10px;
+	}
+	.card {
+		transition: none;
+	}
+	.card:hover {
+		transform: none;
+	}
+	#name {
+		margin-top: inherit;
+		margin-bottom: 20px;
+	}
 }
