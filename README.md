@@ -1,3 +1,4 @@
-# mhancoc7.github.io
+# [jeremehancock.com](https://jeremehancock.com)
+
 
 [Personal Website & Resumé](https://jeremehancock.com)
