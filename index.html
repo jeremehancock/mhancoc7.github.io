@@ -33,7 +33,7 @@
                 <li><span>email:</span> <a href="mailto:michael@jereme.dev">michael@jeremehancock.com</a></li>
                 <li><span>website:</span> <a href="https://jeremehancock.com" target="_blank">jeremehancock.com</a></li>
                 <li><span>blog:</span> <a href="https://pilab.dev" target="_blank">pilab.dev</a></li>
-                <li><span>github:</span> <a href="https://github.com/mhancoc7" target="_blank">github.com/mhancoc7</a></li>
+                <li><span>github:</span> <a href="https://jereme.dv" target="_blank">jereme.dev</a></li>
                 <li><span>linkedin:</span> <a href="https://pilab.dev" target="_blank">linkedin.com/in/jeremehancock/</a></li>
 
             </ul>
@@ -45,11 +45,11 @@
 
         <section>
             <article>
-                <div class="sectionTitle2">
+                <div class="sectionTitle" style="float: none;">
                     <h1>Current Projects <i class="fas fa-caret-down"></i></h1>
                 </div>
 
-                <div class="sectionContent2" style="display:block;">
+                <div class="sectionContent" style="display:block;float:none;width: 100%">
                     <div class="flex-container">
                         <div class="card" onclick="window.open('https://outofcontext.dumbprojects.com', '_blank');">
                             <img src="https://dumbprojects.com/images/outofcontext.png"/>
@@ -239,26 +239,11 @@
 </div>
 
 <script>
-    var coll = document.getElementsByClassName("sectionTitle");
+    var section = document.getElementsByClassName("sectionTitle");
     var i;
 
-    for (i = 0; i < coll.length; i++) {
-        coll[i].addEventListener("click", function () {
-            this.classList.toggle("active");
-            var content = this.nextElementSibling;
-            if (content.style.display === "block") {
-                content.style.display = "none";
-            } else {
-                content.style.display = "block";
-            }
-        });
-    }
-
-    var coll2 = document.getElementsByClassName("sectionTitle2");
-    var y;
-
-    for (y= 0; y < coll2.length; y++) {
-        coll2[y].addEventListener("click", function () {
+    for (i = 0; i < section.length; i++) {
+        section[i].addEventListener("click", function () {
             this.classList.toggle("active");
             var content = this.nextElementSibling;
             if (content.style.display === "block") {

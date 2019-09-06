@@ -161,31 +161,6 @@ section:last-child {
 	margin-bottom: -2px;
 }
 
-.sectionTitle2 {
-	/*float: left;*/
-	/*width: 35%;*/
-	margin-bottom: 10px;
-}
-
-.sectionContent2 {
-	/*float: right;*/
-	/*width: 72.5%;*/
-	display: none;
-}
-
-.sectionTitle2 h1 {
-	font-family: 'Rokkitt', Helvetica, Arial, sans-serif;
-	font-style: italic;
-	font-size: 1.5em;
-	color: #cf8a05;
-}
-
-.sectionContent2 h2 {
-	font-family: 'Rokkitt', Helvetica, Arial, sans-serif;
-	font-size: 1.5em;
-	margin-bottom: -2px;
-}
-
 .subDetails {
 	font-size: 0.8em;
 	font-style: italic;
@@ -217,10 +192,13 @@ section:last-child {
 }
 
 @media all and (min-width: 602px) and (max-width: 800px) {
-	#headshot {
-		display: none;
-	}
-	
+	/*#headshot {*/
+	/*	display: none;*/
+	/*}*/
+
+    #name h1 {
+        font-size: 2em;
+    }
 	.keySkills {
 	-moz-column-count:2;
 	-webkit-column-count:2;
@@ -242,16 +220,23 @@ section:last-child {
 		min-width: 280px;
 	}
 	
-	#headshot {
-		display: none;
-	}
+	/*#headshot {*/
+	/*	display: none;*/
+	/*}*/
 	
 	#name, #contactDetails {
 		float: none;
 		width: 100%;
-		text-align: center;
+		/*text-align: center;*/
 	}
-	
+
+    #name h1 {
+        font-size: 1.8em;
+    }
+    #name h2 {
+        font-size: 1.3em;
+    }
+
 	.sectionTitle, .sectionContent {
 		float: none;
 		width: 100%;
