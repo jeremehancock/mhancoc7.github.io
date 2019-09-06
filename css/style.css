@@ -300,7 +300,7 @@ section:last-child {
     }
 
 	.sectionContent {
-		display: block;
+		display: block !important;
 	}
 
 	.projects {
