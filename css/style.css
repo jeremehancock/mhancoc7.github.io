@@ -464,6 +464,12 @@ img {
 	font-style: italic;
 }
 
+.copyright {
+    float: right;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
 /* Responsive */
 @media screen and (max-width: 768px) {
 	.flex-container > div {
