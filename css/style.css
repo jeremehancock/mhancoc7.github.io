@@ -305,6 +305,10 @@ section:last-child {
 	#contactDetails {
 		margin-top: 20px;
 	}
+
+	i {
+		display: none !important;
+	}
 }
 
 @-webkit-keyframes reset {
