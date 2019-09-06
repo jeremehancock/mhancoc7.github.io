@@ -486,4 +486,12 @@ img {
 		margin-top: inherit;
 		margin-bottom: 20px;
 	}
+
+    .sectionContent a:hover {
+        color: inherit;
+    }
+
+    #contactDetails ul li a:hover {
+        color: inherit;
+    }
 }
