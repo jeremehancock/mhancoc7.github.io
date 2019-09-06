@@ -148,7 +148,7 @@ section:last-child {
 	display: none;
 }
 
-.sectionTitle h1 {
+.sectionTitle h3 {
 	font-family: 'Rokkitt', Helvetica, Arial, sans-serif;
 	font-style: italic;
 	font-size: 1.5em;
