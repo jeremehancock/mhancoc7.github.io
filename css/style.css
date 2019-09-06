@@ -220,26 +220,21 @@ section:last-child {
 		min-width: 280px;
 	}
 	
-	/*#headshot {*/
-	/*	display: none;*/
-	/*}*/
-	
 	#name{
 		float: none;
 		width: 100%;
-		/*text-align: center;*/
 	}
 
     #contactDetails {
         float: left;
         width: 100%;
-        /*text-align: center;*/
     }
 
     #name h1 {
         margin-top: 10px;
         font-size: 1.8em;
     }
+
     #name h2 {
         font-size: 1.3em;
     }
@@ -305,6 +300,10 @@ section:last-child {
 
 	.projects {
 		display: none;
+	}
+
+	#contactDetails {
+		margin-top: 20px;
 	}
 }
 
