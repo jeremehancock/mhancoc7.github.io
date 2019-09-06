@@ -31,10 +31,10 @@
         <div id="contactDetails" class="quickFade delayFour">
             <ul>
                 <li><span>email:</span> <a href="mailto:michael@jereme.dev">michael@jeremehancock.com</a></li>
-                <li><span>website:</span> <a href="//jeremehancock.com" target="_blank">jeremehancock.com</a></li>
-                <li><span>blog:</span> <a href="//pilab.dev" target="_blank">pilab.dev</a></li>
-                <li><span>github:</span> <a href="//github.com/mhancoc7" target="_blank">github.com/mhancoc7</a></li>
-                <li><span>linkedin:</span> <a href="//pilab.dev" target="_blank">linkedin.com/in/jeremehancock/</a></li>
+                <li><span>website:</span> <a href="https://jeremehancock.com" target="_blank">jeremehancock.com</a></li>
+                <li><span>blog:</span> <a href="https://pilab.dev" target="_blank">pilab.dev</a></li>
+                <li><span>github:</span> <a href="https://github.com/mhancoc7" target="_blank">github.com/mhancoc7</a></li>
+                <li><span>linkedin:</span> <a href="https://pilab.dev" target="_blank">linkedin.com/in/jeremehancock/</a></li>
 
             </ul>
         </div>
@@ -71,39 +71,40 @@
                             <img src="https://dumbprojects.com/images/daily-swayze.png"/>
                             <p>Are you crazy for Swayze?</p>
                         </div>
-                        <div class="card" onclick="window.open('https://randomtrump.com', '_blank');">
-                            <img src="https://dumbprojects.com/images/random-trump.png"/>
-                            <p>So much Trump!</p>
-                        </div>
-                        <div class="card" onclick="window.open('https://copypastecoder.com', '_blank');">
-                            <img src="https://dumbprojects.com/images/copypastecoder.png"/>
-                            <p>Stack Overflow search engine.</p>
-                        </div>
+<!--                        <div class="card" onclick="window.open('https://randomtrump.com', '_blank');">-->
+<!--                            <img src="https://dumbprojects.com/images/random-trump.png"/>-->
+<!--                            <p>So much Trump!</p>-->
+<!--                        </div>-->
+<!--                        <div class="card" onclick="window.open('https://copypastecoder.com', '_blank');">-->
+<!--                            <img src="https://dumbprojects.com/images/copypastecoder.png"/>-->
+<!--                            <p>Stack Overflow search engine.</p>-->
+<!--                        </div>-->
                         <div class="card" onclick="window.open('https://pilab.dev', '_blank');">
                             <img src="https://dumbprojects.com/images/pilab.png"/>
                             <p>Raspberry Pi web cluster.</p>
                         </div>
                     </div>
+                    <div class="more-projects"><a href="https://dumbprojects.com" target="_blank">See more...</a> </div>
                 </div>
             </article>
             <div class="clear"></div>
         </section>
-        <section>
-            <article>
-                <div class="sectionTitle">
-                    <h1>Personal Profile <i class="fas fa-caret-down"></i></h1>
-                </div>
+<!--        <section>-->
+<!--            <article>-->
+<!--                <div class="sectionTitle">-->
+<!--                    <h1>Personal Profile <i class="fas fa-caret-down"></i></h1>-->
+<!--                </div>-->
 
-                <div class="sectionContent">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer dolor metus, interdum at
-                        scelerisque in, porta at lacus. Maecenas dapibus luctus cursus. Lorem ipsum dolor sit amet,
-                        consectetur adipiscing elit. Donec ultricies massa et erat luctus hendrerit. Curabitur non
-                        consequat enim. Vestibulum bibendum mattis dignissim. Proin id sapien quis libero interdum
-                        porttitor.</p>
-                </div>
-            </article>
-            <div class="clear"></div>
-        </section>
+<!--                <div class="sectionContent">-->
+<!--                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer dolor metus, interdum at-->
+<!--                        scelerisque in, porta at lacus. Maecenas dapibus luctus cursus. Lorem ipsum dolor sit amet,-->
+<!--                        consectetur adipiscing elit. Donec ultricies massa et erat luctus hendrerit. Curabitur non-->
+<!--                        consequat enim. Vestibulum bibendum mattis dignissim. Proin id sapien quis libero interdum-->
+<!--                        porttitor.</p>-->
+<!--                </div>-->
+<!--            </article>-->
+<!--            <div class="clear"></div>-->
+<!--        </section>-->
 
         <section>
             <div class="sectionTitle">
@@ -253,11 +254,11 @@
         });
     }
 
-    var coll = document.getElementsByClassName("sectionTitle2");
-    var i;
+    var coll2 = document.getElementsByClassName("sectionTitle2");
+    var y;
 
-    for (i = 0; i < coll.length; i++) {
-        coll[i].addEventListener("click", function () {
+    for (y= 0; y < coll2.length; y++) {
+        coll2[y].addEventListener("click", function () {
             this.classList.toggle("active");
             var content = this.nextElementSibling;
             if (content.style.display === "block") {
