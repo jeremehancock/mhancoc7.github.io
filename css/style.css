@@ -58,7 +58,7 @@ p {
 }
 
 #headshot {
-	width: 12.5%;
+	width: 15%;
 	float: left;
 	margin-right: 15px;
 }
@@ -280,6 +280,10 @@ section:last-child {
 		line-height: .8em;
 		margin-bottom: 4px;
 	}
+
+    #name h2 {
+        font-size: 1.2em;
+    }
 }
 
 @media print {
