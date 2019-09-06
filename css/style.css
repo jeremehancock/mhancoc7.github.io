@@ -298,6 +298,14 @@ section:last-child {
     #cv {
         width: 100%;
     }
+
+	.sectionContent {
+		display: block;
+	}
+
+	.projects {
+		display: none;
+	}
 }
 
 @-webkit-keyframes reset {
