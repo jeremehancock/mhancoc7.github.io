@@ -1,0 +1,160 @@
+{
+  "basics": {
+    "name": "Michael Jereme Hancock",
+    "image": "images/profile.jpg",
+    "headline": "I'm just a guy who likes to tinker.",
+    "contacts": [
+      {
+        "type": "email",
+        "value": "michael@jeremehancock.com",
+        "url": "mailto:michael@jeremehancock.com",
+        "icon": "fas fa-envelope"
+      },
+      {
+        "type": "website",
+        "value": "jeremehancock.com",
+        "url": "https://jeremehancock.com",
+        "icon": "fas fa-globe"
+      },
+      {
+        "type": "blog",
+        "value": "pilab.dev",
+        "url": "https://pilab.dev",
+        "icon": "fas fa-blog"
+      },
+      {
+        "type": "github",
+        "value": "jereme.dev",
+        "url": "https://jereme.dev",
+        "icon": "fab fa-github"
+      },
+      {
+        "type": "linkedin",
+        "value": "linkedin.com/in/jeremehancock",
+        "url": "https://linkedin.com/in/jeremehancock",
+        "icon": "fab fa-linkedin"
+      }
+    ]
+  },
+  "projects": [
+    {
+      "name": "UbuntuCE",
+      "description": "Linux For Christians",
+      "image": "images/projects/ubuntuce.png",
+      "url": "https://ubuntuce.com"
+    },
+    {
+      "name": "AI Game Collection",
+      "description": "Collection of AI-powered games",
+      "image": "images/projects/ai-game-collection.png",
+      "url": "https://aigamecollection.com"
+    },
+    {
+      "name": "Random Goat",
+      "description": "Looking for random goat gifs?",
+      "image": "images/projects/random-goat.png",
+      "url": "https://randomgoat.com"
+    }
+  ],
+  "resume": [
+    {
+      "type": "work",
+      "company": "Liquid Web",
+      "position": "Software Developer",
+      "website": "liquidweb.com",
+      "startDate": "2016",
+      "endDate": "Present",
+      "highlights": [
+        "UI development for customer facing control panels",
+        "Full stack development in a fast paced organization",
+        "Perform QE/QA tasks for a variety of projects"
+      ]
+    },
+    {
+      "type": "work",
+      "company": "Rackspace",
+      "position": "Product Manager II",
+      "website": "rackspace.com",
+      "startDate": "2014",
+      "endDate": "2016",
+      "highlights": [
+        "Managed the development of the Cloud Sites Control Panel",
+        "Worked closely with Engineering and System Operations",
+        "Ensured continuous product improvements"
+      ]
+    },
+    {
+      "type": "work",
+      "company": "Rackspace",
+      "position": "Automation Engineer I",
+      "website": "rackspace.com",
+      "startDate": "2013",
+      "endDate": "2014",
+      "highlights": [
+        "Developed and maintained support department procedures",
+        "Built web applications for customers and support staff",
+        "Liaised with Development and Engineering teams"
+      ]
+    },
+    {
+      "type": "work",
+      "company": "Rackspace",
+      "position": "Linux System Admin I",
+      "website": "rackspace.com",
+      "startDate": "2012",
+      "endDate": "2013",
+      "highlights": [
+        "Delivered Fanatical customer support via phone, chat, and ticket systems",
+        "Troubleshot complex issues in a load balanced, clustered hosting environment",
+        "Handled various levels of customer escalations"
+      ]
+    },
+    {
+      "type": "work", 
+      "company": "Rackspace",
+      "position": "Support Technician",
+      "website": "rackspace.com",
+      "startDate": "2011",
+      "endDate": "2012",
+      "highlights": [
+        "Delivered Fanatical customer support via phone, chat, and ticket systems",
+        "Troubleshot complex issues in a load balanced, clustered hosting environment",
+        "Handled various levels of customer escalations"
+      ]
+    },
+    {
+      "type": "work",
+      "company": "Freelance",
+      "position": "Web Design and Development",
+      "startDate": "2004",
+      "endDate": "present",
+      "highlights": [
+        "Designed custom special interest websites for personal business use and by contract",
+        "Provided flexible, responsive customer support via email, telephone, and online forums",
+        "Maintained and provided full spectrum support including SEO and monthly updates"
+      ]
+    },
+    {
+      "type": "work",
+      "company": "NIMH",
+      "position": "Program Assistant",
+      "website": "nimh.nih.gov",
+      "startDate": "2004",
+      "endDate": "2005",
+      "highlights": [
+        "Advised Principal Investigators at U.S. research institutions",
+        "Reviewed/facilitated all financial disclosure and official duty requests",
+        "Developed/maintained information systems for managing and producing reports"
+      ]
+    },
+    {
+      "type": "education",
+      "institution": "Northwestern Oklahoma State University",
+      "area": "Business Administration",
+      "studyType": "B.S.",
+      "highlights": [
+        "Selected as Most Promising E-commerce student by faculty"
+      ]
+    }
+  ]
+}

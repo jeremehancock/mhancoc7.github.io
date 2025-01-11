@@ -1,223 +1,472 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Michael Jereme Hancock - Resumé</title>
+    <title>Michael Jereme Hancock</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="The Resumé of Michael Jereme Hancock."/>
-
-    <meta property="og:title" content="Michael Jereme Hancock" />
-    <meta property="og:type" content="website" />
-    <meta property="og:description" content="The Resumé of Michael Jereme Hancock." />
-    <meta property="og:url" content="https://jeremehancock.com" />
-    <meta property="og:image" content="https://jeremehancock.com/images/facebook.jpg" />
-    <meta property="og:site_name" content="jeremehancock.com" />
-
-    <link rel="apple-touch-icon" sizes="57x57" href="images/favicon/apple-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="images/favicon/apple-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="images/favicon/apple-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="images/favicon/apple-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="images/favicon/apple-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="images/favicon/apple-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="images/favicon/apple-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="images/favicon/apple-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="images/favicon/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="images/favicon/android-icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="images/favicon/favicon-96x96.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon/favicon-16x16.png">
-    <link rel="manifest" href="images/favicon/manifest.json">
-    <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage" content="images/favicon/ms-icon-144x144.png">
-    <meta name="theme-color" content="#ffffff">
-
-    <link type="text/css" rel="stylesheet" href="css/style.css">
+    <meta name="description" content="Michael Jereme Hancock"/>
     <link href='https://fonts.googleapis.com/css?family=Rokkitt:400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.css">
+	<link rel="icon" type="image/png" href="/images/favicons/favicon-96x96.png" sizes="96x96" />
+	<link rel="icon" type="image/svg+xml" href="/images/favicons/favicon.svg" />
+	<link rel="shortcut icon" href="/images/favicons/favicon.ico" />
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon.png" />
+	<link rel="manifest" href="site.webmanifest" />
+    <style>
+        :root {
+            --bg-color: #0a0a0a;
+            --text-color: #e5e5e5;
+            --text-muted: #a3a3a3;
+            --accent-color: #0284c7;
+            --accent-hover: #0369a1;
+            --card-bg: #171717;
+            --font-sans: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
 
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 80px;
+            background-color: var(--bg-color);
+        }
+
+        body {
+            font-family: var(--font-sans);
+            color: var(--text-color);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            padding-top: 60px;
+            font-size: 1.1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            padding: 6rem 0;
+        }
+
+        .loading {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .loading-text {
+            font-size: 1.5rem;
+            color: var(--accent-color);
+            position: relative;
+        }
+
+        .loading-text::after {
+            content: '...';
+            position: absolute;
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: ''; }
+            40% { content: '.'; }
+            60% { content: '..'; }
+            80%, 100% { content: '...'; }
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            border-bottom: 1px solid #262626;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            height: 100%;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
+            padding: 0.5rem;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-color);
+        }
+
+        .menu-button {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 1.5rem;
+            padding: 0.5rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            display: flex;
+            align-items: start;
+            gap: 3rem;
+        }
+
+        .hero-profile-img {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent-color);
+            flex-shrink: 0;
+        }
+
+        .hero-text {
+            flex-grow: 1;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 600;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+
+        .hero p {
+            font-size: clamp(1.1rem, 2vw, 1.3rem);
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+
+        /* Contact Links */
+        .contact-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .contact-link {
+            color: var(--text-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .contact-link:hover {
+            color: var(--accent-color);
+        }
+
+        .contact-link i {
+            color: var(--accent-color);
+        }
+
+        /* Projects Section */
+        .projects-grid {
+            display: flex;
+            gap: 2rem;
+            width: 100%;
+            padding: 2rem 0;
+        }
+
+        .project-card {
+            position: relative;
+            background: var(--card-bg);
+            border-radius: 0.5rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 0;
+            cursor: pointer;
+            border: 1px solid #262626;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-color);
+        }
+
+        .project-card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .project-content {
+            padding: 1.5rem;
+        }
+
+        .project-content h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+
+        .project-content p {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        /* Resume Section */
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: var(--text-color);
+        }
+
+        .resume-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            width: 100%;
+        }
+
+        .resume-item {
+            background: var(--card-bg);
+            border-radius: 0.5rem;
+            padding: 2rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+            border: 1px solid #262626;
+        }
+
+        .resume-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .resume-item h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+
+        .resume-date {
+            color: var(--accent-color);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .resume-list {
+            list-style: none;
+            color: var(--text-muted);
+        }
+
+        .resume-list li {
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .resume-list li::before {
+            content: "›";
+            position: absolute;
+            left: 0;
+            color: var(--accent-color);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .fade-up {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .projects-grid {
+                flex-direction: column;
+                max-width: 600px;
+                margin: 0 auto;
+            }
+
+            .project-card img {
+                height: 300px;
+            }
+        }
+        
+        .copyright {
+			float: right;
+			margin-top: 20px;
+			margin-bottom: 20px;
+			margin-right: 20px;	
+		}
+
+        @media (max-width: 768px) {
+            .menu-button {
+                display: block;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 60px;
+                right: -100%;
+                flex-direction: column;
+                gap: 0;
+                background: rgba(10, 10, 10, 0.95);
+                backdrop-filter: blur(10px);
+                width: 200px;
+                height: calc(100vh - 60px);
+                padding: 1rem 0;
+                transition: right 0.3s ease;
+                border-left: 1px solid #262626;
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .nav-links a {
+                display: block;
+                padding: 1rem 2rem;
+                width: 100%;
+            }
+
+            .nav-links a:hover {
+                background: var(--card-bg);
+            }
+
+            section {
+                padding: 4rem 0;
+            }
+
+            .hero-content {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: 2rem;
+            }
+
+            .hero-profile-img {
+                width: 150px;
+                height: 150px;
+            }
+
+            .contact-links {
+                justify-content: center;
+            }
+
+            .project-card img {
+                height: 200px;
+            }
+
+            .resume-item {
+                padding: 1.5rem;
+            }
+        }
+    </style>
 </head>
-<body id="top">
-<div id="cv" class="instaFade">
-    <div class="mainDetails">
-        <div id="headshot" class="quickFade">
-            <img src="images/headshot.jpg" alt="Jereme Hancock"/>   
-        </div>
-
-        <div id="name">
-            <h1 class="quickFade delayTwo">Michael Jereme Hancock</h1>
-            <h2 class="quickFade delayThree">I'm just a guy who likes to tinker.</h2>
-        </div>
-
-        <div id="contactDetails" class="quickFade delayFour">
-            <ul>
-                <li><span>email:</span> <a href="mailto:michael@jereme.dev">michael@jeremehancock.com</a></li>
-                <li><span>website:</span> <a href="#">jeremehancock.com</a></li>
-                <li><span>blog:</span> <a href="https://pilab.dev" target="_blank">pilab.dev</a></li>
-                <li><span>github:</span> <a href="https://jereme.dev" target="_blank">jereme.dev</a></li>
-                <li><span>linkedin:</span> <a href="https://linkedin.com/in/jeremehancock/" target="_blank">linkedin.com/in/jeremehancock</a></li>
-            </ul>
-        </div>
-        <div class="clear"></div>
+<body>
+    <div class="loading">
+        <div class="loading-text">Loading</div>
     </div>
 
-    <div id="mainArea" class="quickFade delayFive">
-
-        <section class="projects">
-            <div class="sectionTitle" style="float: none;">
-                <h3>Current Projects <i class="fas fa-caret-up"></i></h3>
+    <div id="content" class="hidden">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="nav-container">
+                <button class="menu-button" aria-label="Toggle menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <ul class="nav-links">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#projects">Projects</a></li>
+                    <li><a href="#resume">Resume</a></li>
+                </ul>
             </div>
+        </nav>
 
-            <div class="sectionContent" style="display:block;float:none;width: 100%">
-                <div class="flex-container">
-                    <div class="card" onclick="window.open('https://ubuntuce.com', '_blank');">
-                        <img src="images/projects/ubuntuce.png" alt="Ubuntu Christian Edition"/>
-                    <div>UbuntuCE - Linux For Christians</div>
-                    </div>
-                    <div class="card" onclick="window.open('https://aigamecollection.com', '_blank');">
-                        <img src="images/projects/ai-game-collection.png" alt="AI Game Collection"/>
-                        <div>AI Game Collection</div>
-                    </div>
-                    <div class="card" onclick="window.open('https://randomgoat.com', '_blank');">
-                        <img src="images/projects/random-goat.png" alt="Random Goat"/>
-                        <div>Looking for random goat gifs?</div>
-                    </div>
+        <!-- Hero Section -->
+		<section class="hero" id="home">
+			<div class="container">
+				<div class="hero-content">
+				    <img class="hero-profile-img" id="profileImg" alt="">
+				    <div class="hero-text">
+				        <h1 id="name"></h1>
+				        <p id="headline"></p>
+				        <div class="contact-links" id="contactLinks">
+				            <!-- Contact links will be inserted here -->
+				        </div>
+				    </div>
+				</div>
+			</div>
+		</section>
+
+        <!-- Projects Section -->
+        <section id="projects">
+            <div class="container">
+                <h2 class="section-title">Projects</h2>
+                <div class="projects-grid" id="projectsGrid">
+                    <!-- Projects will be inserted here -->
                 </div>
             </div>
-            <div class="clear"></div>
         </section>
 
-        <section>
-            <div class="sectionTitle">
-                <h3>Work Experience <i class="fas fa-caret-down"></i></h3>
+        <!-- Resume Section -->
+        <section id="resume">
+            <div class="container">
+                <h2 class="section-title">Experience & Education</h2>
+                <div class="resume-container" id="resumeContainer">
+                    <!-- Resume items will be inserted here -->
+                </div>
             </div>
-
-            <div class="sectionContent">
-                <article>
-                    <h2>Software Developer at <a href="//liquidweb.com" class="company-links" target="_blank">Liquid
-                        Web</a></h2>
-                    <p class="subDetails">2016 - Present</p>
-                    <div class="items">
-                        <ul>
-                            <li>UI development for our customer facing control panels.</li>
-                            <li>Full stack development in a fast paced organization.</li>
-                            <li>Perform QE/QA tasks for a variety of projects.</li>
-                        </ul>
-                    </div>
-                </article>
-
-                <article>
-                    <h2>Product Manager II at <a href="//rackspace.com" class="company-links"
-                                                 target="_blank">Rackspace</a></h2>
-                    <p class="subDetails">2014-2016</p>
-                    <div class="items">
-                        <ul>
-                            <li>Manage the development of the Cloud Sites Control Panel.</li>
-                            <li>Work closesly with Engineering and System Operations to implement improvements to the
-                                Cloud Sites product.
-                            </li>
-                            <li>Ensure that the Cloud Sites product is focused on continuous improvements.</li>
-                        </ul>
-                    </div>
-                </article>
-
-                <article>
-                    <h2>Automation Engineer I at <a href="//rackspace.com" class="company-links" target="_blank">Rackspace</a>
-                    </h2>
-                    <p class="subDetails">2013-2014</p>
-                    <div class="items">
-                        <ul>
-                            <li>Develop and maintain procedures to ensure efficiency within support department.</li>
-                            <li>Build various web applications for customer's and support staff.</li>
-                            <li>Liaison with our Development and Engineering teams.</li>
-                        </ul>
-                    </div>
-                </article>
-
-                <article>
-                    <h2>Linux System Admin I at <a href="//rackspace.com" class="company-links" target="_blank">Rackspace</a>
-                    </h2>
-                    <p class="subDetails">2012-2013</p>
-                    <div class="items">
-                        <ul>
-                            <li>Deliver Fanatical customer support via phone, chat, and ticket systems.</li>
-                            <li>Troubleshoot complex issues in a load balanced, clustered hosting environment.</li>
-                            <li>Handle various levels of customer escalations.</li>
-                        </ul>
-                    </div>
-                </article>
-
-                <article>
-                    <h2>Support Technician at <a href="//rackspace.com" class="company-links" target="_blank">Rackspace</a></h2>
-                    <p class="subDetails">2011-2012</p>
-                    <div class="items">
-                        <ul>
-                            <li>Deliver Fanatical customer support via phone, chat, and ticket systems.</li>
-                            <li>Troubleshoot complex issues in a load balanced, clustered hosting environment.</li>
-                            <li>Handle various levels of customer escalations.</li>
-                        </ul>
-                    </div>
-                </article>
-
-                <article>
-                    <h2>Freelance Web Design and Development</h2>
-                    <p class="subDetails">2004-present</p>
-                    <div class="items">
-                        <ul>
-                            <li>Designed custom special interest websites for personal business use and by contract for
-                                other organizations and businesses.
-                            </li>
-                            <li>Provided flexible, responsive customer support via email, telephone, and online forums
-                                to resolve email and website issues.
-                            </li>
-                            <li>Maintained and provided full spectrum support to include search engine optimization and
-                                monthly updates.
-                            </li>
-                        </ul>
-                    </div>
-                </article>
-
-                <article>
-                    <h2>Program Assistant at <a href="//www.nimh.nih.gov" class="company-links" target="_blank">NIMH</a>
-                    </h2>
-                    <p class="subDetails">2004-2005</p>
-                    <div class="items">
-                        <ul>
-                            <li>Advised Principal Investigators at U.S. research institutions applying for
-                                confidentiality certificates for their research projects.
-                            </li>
-                            <li>Reviewed/facilitated all financial disclosure, outside activities, official duty
-                                requests, and sponsored travel forms for all NIMH employees.
-                            </li>
-                            <li>Developed/maintained information systems for managing and producing reports tailored to
-                                a broad spectrum of data requests.
-                            </li>
-                        </ul>
-                    </div>
-                </article>
-            </div>
-            <div class="clear"></div>
         </section>
-
-        <section>
-            <div class="sectionTitle">
-                <h3>Education <i class="fas fa-caret-down"></i></h3>
-            </div>
-
-            <div class="sectionContent">
-                <article>
-                    <h2><a href="//www.nwosu.edu/" target="_blank">Northwestern Oklahoma State University</a></h2>
-                    <p class="subDetails">B.S., Business Administration</p>
-                    <p>Selected as Most Promising E-commerce student by faculty.</p>
-                </article>
-
-            </div>
-            <div class="clear"></div>
-        </section>
-
+        
         <div class="copyright">
             <script>
                 today = new Date();
@@ -225,59 +474,162 @@
                 document.write('© 2004-' + y0);
             </script>
         </div>
-
-        <div class="clear"></div>
-
     </div>
-</div>
 
-<script>
-    var section = document.getElementsByClassName("sectionTitle");
-    var i;
+    <script>
+        async function loadResumeData() {
+            try {
+                const response = await fetch('data/data.json');
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('Error loading resume data:', error);
+                return null;
+            }
+        }
 
-    for (i = 0; i < section.length; i++) {
-        section[i].addEventListener("click", function () {
-            if (this.childNodes[1].innerText === "Current Projects ") {
-                console.log(this.childNodes[1].childNodes[1].classList.value);
-                if (this.childNodes[1].childNodes[1].classList.value === "fas fa-caret-up" ) {
-                    this.childNodes[1].childNodes[1].classList.remove("fa-caret-up");
-                    this.childNodes[1].childNodes[1].classList.add("fa-caret-down");
+        function createContactLinks(contacts) {
+            return contacts.map(contact => `
+                <a href="${contact.url}" class="contact-link" target="_blank">
+                    <i class="${contact.icon}"></i>
+                    <span>${contact.value}</span>
+                </a>
+            `).join('');
+        }
+
+        function createProjectCard(project) {
+            return `
+                <div class="project-card fade-up" onclick="window.open('${project.url}', '_blank')">
+                    <img src="${project.image}" alt="${project.name}"/>
+                    <div class="project-content">
+                        <h3>${project.name}</h3>
+                        <p>${project.description}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+		function createResumeItem(item) {
+			var highlights = item.highlights.map(function(highlight) {
+				return '<li>' + highlight + '</li>';
+			}).join('');
+
+			var title = '';
+			if (item.type === 'education') {
+				title = item.studyType + ' in ' + item.area;
+			} else {
+				title = item.position + (item.company ? ' at ' + item.company : '');
+			}
+
+			var dateHtml = '';
+			if (item.startDate || item.endDate) {
+				var startDate = item.startDate || '';
+				var endDate = item.endDate || '';
+				var separator = (item.startDate && item.endDate) ? ' - ' : '';
+				dateHtml = '<div class="resume-date">' + startDate + separator + endDate + '</div>';
+			}
+
+			var html = '<div class="resume-item">';
+			html += '<h3>' + title + '</h3>';
+			html += dateHtml;
+			html += '<ul class="resume-list">';
+			html += highlights;
+			html += '</ul>';
+			html += '</div>';
+
+			return html;
+		}
+
+        async function initializePage() {
+            const data = await loadResumeData();
+            
+            if (!data) {
+                document.querySelector('.loading-text').textContent = 'Error loading data';
+                return;
+            }
+
+            // Set basic information
+            document.getElementById('name').textContent = data.basics.name;
+            document.getElementById('headline').textContent = data.basics.headline;
+            document.getElementById('profileImg').src = data.basics.image;
+
+            // Render contact links
+            const contactLinks = document.getElementById('contactLinks');
+            contactLinks.innerHTML = createContactLinks(data.basics.contacts);
+
+            // Render projects
+            const projectsGrid = document.getElementById('projectsGrid');
+            projectsGrid.innerHTML = data.projects.map(createProjectCard).join('');
+
+            // Render resume items
+            const resumeContainer = document.getElementById('resumeContainer');
+            resumeContainer.innerHTML = data.resume.map(createResumeItem).join('');
+
+            // Hide loading screen and show content
+            document.querySelector('.loading').style.display = 'none';
+            document.getElementById('content').classList.remove('hidden');
+
+            // Initialize intersection observer for animations
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, observerOptions);
+
+            // Observe all fade-up elements and resume items
+            document.querySelectorAll('.fade-up, .resume-item').forEach((el) => {
+                observer.observe(el);
+            });
+        }
+
+        // Initialize the page when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            initializePage();
+
+            // Mobile menu functionality
+            const menuButton = document.querySelector('.menu-button');
+            const navLinks = document.querySelector('.nav-links');
+            
+            menuButton.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+                const icon = menuButton.querySelector('i');
+                icon.classList.toggle('fa-bars');
+                icon.classList.toggle('fa-times');
+            });
+
+            // Close menu when clicking a link
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.addEventListener('click', () => {
+                    if (window.innerWidth <= 768) {
+                        navLinks.classList.remove('active');
+                        const icon = menuButton.querySelector('i');
+                        icon.classList.add('fa-bars');
+                        icon.classList.remove('fa-times');
+                    }
+                });
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', (e) => {
+                if (window.innerWidth <= 768 && 
+                    !e.target.closest('.nav-links') && 
+                    !e.target.closest('.menu-button') && 
+                    navLinks.classList.contains('active')) {
+                    navLinks.classList.remove('active');
+                    const icon = menuButton.querySelector('i');
+                    icon.classList.add('fa-bars');
+                    icon.classList.remove('fa-times');
                 }
-                else {
-                    this.childNodes[1].childNodes[1].classList.remove("fa-caret-down");
-                    this.childNodes[1].childNodes[1].classList.add("fa-caret-up");
-                }
-            }
-            else {
-                this.childNodes[1].childNodes[1].classList.toggle("fa-caret-up");
-            }
-            this.classList.toggle("active");
-            var content = this.nextElementSibling;
-            if (content.style.display === "block") {
-                content.style.display = "none";
-            } else {
-                content.style.display = "block";
-            }
+            });
         });
-    }
-</script>
-
-<!-- Start of StatCounter Code -->
-<script>
-    var sc_project = 2905188;
-    var sc_invisible = 1;
-    var sc_security = "5bd24ec6";
-</script>
-
-<script src="//www.statcounter.com/counter/counter.js"></script>
-<noscript>
-    <div class="statcounter">
-        <a title="tumblr tracker" href="//www.statcounter.com/tumblr/" target="_blank">
-            <img class="statcounter" src="//c.statcounter.com/2905188/0/5bd24ec6/1/" alt="tumblr tracker"/>
-        </a>
-    </div>
-</noscript>
-<!-- End of StatCounter Code -->
-
+    </script>
 </body>
 </html>
