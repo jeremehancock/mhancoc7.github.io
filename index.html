@@ -282,11 +282,65 @@
             transform: translateY(0);
         }
 
-        .resume-item h3 {
-            font-size: 1.25rem;
-            margin-bottom: 0.5rem;
-            color: var(--text-color);
-        }
+		.resume-item {
+			background: var(--card-bg);
+			border-radius: 0.5rem;
+			padding: 2rem;
+			opacity: 0;
+			transform: translateY(20px);
+			transition: all 0.6s ease;
+			border: 1px solid #262626;
+		}
+
+		.resume-item.visible {
+			opacity: 1;
+			transform: translateY(0);
+		}
+
+		.resume-title {
+			display: flex;
+			align-items: center;
+			gap: 1rem;
+			margin-bottom: 0.5rem;
+			justify-content: space-between;
+		}
+
+		.resume-position {
+			font-size: 1rem;
+			color: var(--text-color);
+			font-weight: 600;
+		}
+
+		.resume-company {
+			font-size: .9rem;
+			color: var(--text-muted);
+			font-weight: normal;
+		}
+
+		.resume-date {
+			color: var(--accent-color);
+			font-size: 0.9rem;
+			margin-bottom: 1rem;
+			font-weight: 600;
+		}
+
+		.resume-list {
+			list-style: none;
+			color: var(--text-muted);
+		}
+
+		.resume-list li {
+			margin-bottom: 0.5rem;
+			padding-left: 1.5rem;
+			position: relative;
+		}
+
+		.resume-list li::before {
+			content: "›";
+			position: absolute;
+			left: 0;
+			color: var(--accent-color);
+		}
 
         .resume-date {
             color: var(--accent-color);
@@ -409,7 +463,7 @@
             }
 
             .resume-item {
-                padding: 1.5rem;
+                padding: 1rem;
             }
         }
     </style>
@@ -517,12 +571,17 @@
 				return '<li>' + highlight + '</li>';
 			}).join('');
 
-			var title = '';
+			var titleHtml = '<div class="resume-title">';
 			if (item.type === 'education') {
-				title = item.studyType + ' in ' + item.area;
+				titleHtml += '<span class="resume-position">' + item.studyType + ' in ' + item.area + '</span>';
+				titleHtml += '<span class="resume-company">' + item.institution + '</span>';
 			} else {
-				title = item.position + (item.company ? ' at ' + item.company : '');
+				titleHtml += '<span class="resume-position">' + item.position + '</span>';
+				if (item.company) {
+				    titleHtml += '<span class="resume-company">' + item.company + '</span>';
+				}
 			}
+			titleHtml += '</div>';
 
 			var dateHtml = '';
 			if (item.startDate || item.endDate) {
@@ -533,7 +592,7 @@
 			}
 
 			var html = '<div class="resume-item">';
-			html += '<h3>' + title + '</h3>';
+			html += titleHtml;
 			html += dateHtml;
 			html += '<ul class="resume-list">';
 			html += highlights;
