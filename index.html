@@ -98,6 +98,7 @@
             backdrop-filter: blur(10px);
             z-index: 1000;
             border-bottom: 1px solid #262626;
+            transition: transform 0.3s ease;
         }
 
         .nav-container {
@@ -403,6 +404,10 @@
         }
 
         @media (max-width: 768px) {
+            .navbar.nav-hidden {
+        		transform: translateY(-100%);
+    		}
+    		
             .menu-button {
                 display: block;
             }
@@ -692,6 +697,38 @@
                 }
             });
         });
+		// Handle scroll behavior for navbar
+		let lastScrollY = window.scrollY;
+		const navbar = document.querySelector('.navbar');
+
+		const handleScroll = () => {
+			if (window.innerWidth <= 768) {  // Only apply on mobile
+				const currentScrollY = window.scrollY;
+				
+				// Determine scroll direction
+				if (currentScrollY > lastScrollY) {
+				    // Scrolling down
+				    navbar.classList.add('nav-hidden');
+				} else {
+				    // Scrolling up
+				    navbar.classList.remove('nav-hidden');
+				}
+				
+				lastScrollY = currentScrollY;
+			}
+		};
+
+		// Add scroll event listener with throttling for better performance
+		let ticking = false;
+		window.addEventListener('scroll', () => {
+			if (!ticking) {
+				window.requestAnimationFrame(() => {
+				    handleScroll();
+				    ticking = false;
+				});
+				ticking = true;
+			}
+		});
     </script>
 </body>
 </html>
