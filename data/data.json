@@ -60,10 +60,23 @@
     {
       "type": "work",
       "company": "Liquid Web",
-      "position": "Software Developer",
+      "position": "Software Developer II",
+      "website": "liquidweb.com",
+      "startDate": "2021",
+      "endDate": "Present",
+      "highlights": [
+        "UI development for our customer facing control panels.",
+        "Full stack development in a fast paced organization.",
+        "Perform QE/QA tasks for a variety of projects."
+      ]
+    },
+    {
+      "type": "work",
+      "company": "Liquid Web",
+      "position": "Software Developer I",
       "website": "liquidweb.com",
       "startDate": "2016",
-      "endDate": "Present",
+      "endDate": "2021",
       "highlights": [
         "UI development for our customer facing control panels.",
         "Full stack development in a fast paced organization.",
