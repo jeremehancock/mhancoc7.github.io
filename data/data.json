@@ -44,6 +44,12 @@
       "url": "https://github.com/jeremehancock/CLIX"
     },
     {
+      "name": "MediaStats",
+      "description": "Simple Plex Media Stats",
+      "image": "images/projects/media-stats.png",
+      "url": "https://github.com/jeremehancock/media-stats"
+    },
+    {
       "name": "AI Game Collection",
       "description": "Collection of AI-powered games",
       "image": "images/projects/ai-game-collection.png",
