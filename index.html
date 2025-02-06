@@ -214,9 +214,9 @@
             color: var(--accent-color);
         }
 
-        /* Projects Section */
         .projects-grid {
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
             gap: 2rem;
             width: 100%;
             padding: 2rem 0;
@@ -228,8 +228,6 @@
             border-radius: 0.5rem;
             overflow: hidden;
             transition: all 0.3s ease;
-            flex: 1;
-            min-width: 0;
             cursor: pointer;
             border: 1px solid #262626;
         }
