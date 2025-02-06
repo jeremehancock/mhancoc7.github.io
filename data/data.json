@@ -38,10 +38,10 @@
   },
   "projects": [
     {
-      "name": "UbuntuCE",
-      "description": "Linux For Christians",
-      "image": "images/projects/ubuntuce.png",
-      "url": "https://ubuntuce.com"
+      "name": "CLIX",
+      "description": "A Plex Terminal Media Player",
+      "image": "images/projects/clix.png",
+      "url": "https://github.com/jeremehancock/CLIX"
     },
     {
       "name": "AI Game Collection",
