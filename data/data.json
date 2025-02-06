@@ -44,6 +44,12 @@
       "url": "https://github.com/jeremehancock/CLIX"
     },
     {
+      "name": "Libretto",
+      "description": "Plex Library Metadata Exporter",
+      "image": "images/projects/libretto.png",
+      "url": "https://github.com/jeremehancock/Libretto"
+    },
+    {
       "name": "MediaStats",
       "description": "Simple Plex Media Stats",
       "image": "images/projects/media-stats.png",
