@@ -69,7 +69,7 @@
     },
     {
       "name": "Ludanta",
-      "description": "Now Playing on Plex/Jellyfin (Command Line)",
+      "description": "Now Playing on Plex/Jellyfin",
       "image": "images/projects/ludanta.png",
       "url": "https://github.com/jeremehancock/Ludanta"
     }
