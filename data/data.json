@@ -49,6 +49,12 @@
       "image": "images/projects/libretto.png",
       "url": "https://github.com/jeremehancock/Libretto"
     },
+        {
+      "name": "Ludanta",
+      "description": "Now Playing on Plex/Jellyfin",
+      "image": "images/projects/ludanta.png",
+      "url": "https://github.com/jeremehancock/Ludanta"
+    },
     {
       "name": "MediaStats",
       "description": "Simple Plex Media Stats",
@@ -66,12 +72,6 @@
       "description": "Looking for random goat gifs?",
       "image": "images/projects/random-goat.png",
       "url": "https://randomgoat.com"
-    },
-    {
-      "name": "Ludanta",
-      "description": "Now Playing on Plex/Jellyfin",
-      "image": "images/projects/ludanta.png",
-      "url": "https://github.com/jeremehancock/Ludanta"
     }
   ],
   "resume": [
