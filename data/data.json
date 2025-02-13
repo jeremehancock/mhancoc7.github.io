@@ -68,10 +68,10 @@
       "url": "https://randomgoat.com"
     },
     {
-      "name": "UbuntuCE",
-      "description": "Linux For Christians",
-      "image": "images/projects/ubuntuce.png",
-      "url": "https://ubuntuce.com"
+      "name": "Ludanta",
+      "description": "Now Playing on Plex/Jellyfin (Command Line)",
+      "image": "images/projects/ludanta.png",
+      "url": "https://github.com/jeremehancock/Ludanta"
     }
   ],
   "resume": [
