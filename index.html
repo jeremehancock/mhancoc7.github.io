@@ -960,7 +960,6 @@
 
 	<script>
 		// Navigation state variables
-		let scrollTimeout = null;
 		let isScrollingToTarget = false;
 
 		// Mobile viewport height calculation
@@ -971,11 +970,19 @@
 
 		// Set active navigation link (single source of truth)
 		function setActiveNavLink(activeSection) {
-			// Clear ALL active states first
+			// Aggressively clear ALL active states - multiple methods to ensure they're gone
 			const allNavLinks = document.querySelectorAll('.nav-links a');
 			allNavLinks.forEach(link => {
 				link.classList.remove('active');
 			});
+
+			// Double-check with direct class removal
+			document.querySelectorAll('.nav-links a.active').forEach(link => {
+				link.classList.remove('active');
+			});
+
+			// Force a layout recalculation to ensure changes are applied
+			document.body.offsetHeight;
 
 			// Set exactly one active link
 			const activeLink = document.querySelector(`.nav-links a[href="#${activeSection}"]`);
@@ -994,15 +1001,15 @@
 			const documentHeight = document.documentElement.scrollHeight;
 			const navbarHeight = 60;
 
-			// More responsive offset - smaller for better responsiveness
-			const offset = navbarHeight + 50;
+			// Smaller, more responsive offset
+			const offset = navbarHeight + 30;
 
 			// If we're near the bottom of the page, always show the last section
-			if (scrollPosition + windowHeight >= documentHeight - 50) {
+			if (scrollPosition + windowHeight >= documentHeight - 100) {
 				return 'resume';
 			}
 
-			// Find which section we're currently viewing
+			// Find which section we're currently viewing - more aggressive detection
 			let activeSection = 'contact'; // default
 
 			for (let i = sections.length - 1; i >= 0; i--) {
@@ -1011,11 +1018,8 @@
 
 				if (section) {
 					const sectionTop = section.offsetTop;
-					const sectionHeight = section.offsetHeight;
-					const sectionBottom = sectionTop + sectionHeight;
 
-					// Check if we're within this section's boundaries
-					// A section is active if we've scrolled past its top by at least the offset
+					// Much more responsive - activate as soon as we start entering a section
 					if (scrollPosition + offset >= sectionTop) {
 						activeSection = sectionId;
 						break;
@@ -1026,23 +1030,16 @@
 			return activeSection;
 		}
 
-		// Handle scroll events - MUCH more responsive
+		// Handle scroll events - IMMEDIATE and aggressive
 		function handleScroll() {
-			// Clear any existing timeout
-			if (scrollTimeout) {
-				clearTimeout(scrollTimeout);
-			}
-
 			// Update navbar scroll effect immediately
 			const navbar = document.querySelector('.navbar');
 			const scrolled = window.pageYOffset > 50;
 			navbar.classList.toggle('scrolled', scrolled);
 
-			// Update active section with much shorter delay for better responsiveness
-			scrollTimeout = setTimeout(() => {
-				const activeSection = getActiveSection();
-				setActiveNavLink(activeSection);
-			}, 10); // Reduced from 50ms to 10ms for much better responsiveness
+			// Update active section IMMEDIATELY - no timeout, no delay
+			const activeSection = getActiveSection();
+			setActiveNavLink(activeSection);
 		}
 
 		// Handle smooth scrolling to sections
@@ -1082,8 +1079,19 @@
 				});
 			});
 
-			// Set up scroll event listener with passive for better performance
-			window.addEventListener('scroll', handleScroll, { passive: true });
+			// Set up scroll event listener - use throttling for performance but immediate updates
+			let ticking = false;
+			function onScroll() {
+				if (!ticking) {
+					requestAnimationFrame(() => {
+						handleScroll();
+						ticking = false;
+					});
+					ticking = true;
+				}
+			}
+
+			window.addEventListener('scroll', onScroll, { passive: true });
 
 			// Set initial active state
 			setTimeout(() => {
@@ -1095,12 +1103,6 @@
 		function forceScrollToTop() {
 			if ('scrollRestoration' in history) {
 				history.scrollRestoration = 'manual';
-			}
-
-			// Clear scroll timeout
-			if (scrollTimeout) {
-				clearTimeout(scrollTimeout);
-				scrollTimeout = null;
 			}
 
 			window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
