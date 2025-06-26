@@ -970,27 +970,40 @@
 
 		// Set active navigation link (single source of truth)
 		function setActiveNavLink(activeSection) {
-			// Aggressively clear ALL active states - multiple methods to ensure they're gone
+			console.log(`Setting active section to: ${activeSection}`);
+
+			// First, let's see what active links exist before we clear them
+			const activeBefore = document.querySelectorAll('.nav-links a.active');
+			console.log(`Active links before clearing: ${activeBefore.length}`, activeBefore);
+
+			// Aggressively clear ALL active states
 			const allNavLinks = document.querySelectorAll('.nav-links a');
 			allNavLinks.forEach(link => {
-				link.classList.remove('active');
-			});
-
-			// Double-check with direct class removal
-			document.querySelectorAll('.nav-links a.active').forEach(link => {
+				if (link.classList.contains('active')) {
+					console.log(`Removing active from:`, link.href);
+				}
 				link.classList.remove('active');
 			});
 
 			// Force a layout recalculation to ensure changes are applied
 			document.body.offsetHeight;
 
+			// Check if any are still active after removal
+			const activeAfterClear = document.querySelectorAll('.nav-links a.active');
+			console.log(`Active links after clearing: ${activeAfterClear.length}`, activeAfterClear);
+
 			// Set exactly one active link
 			const activeLink = document.querySelector(`.nav-links a[href="#${activeSection}"]`);
 			if (activeLink) {
 				activeLink.classList.add('active');
+				console.log(`Added active to:`, activeLink.href);
+			} else {
+				console.log(`Could not find link for section: ${activeSection}`);
 			}
 
-			console.log(`Active section set to: ${activeSection}`);
+			// Final check
+			const finalActive = document.querySelectorAll('.nav-links a.active');
+			console.log(`Final active links: ${finalActive.length}`, finalActive);
 		}
 
 		// Determine which section should be active based on scroll position
@@ -1004,8 +1017,11 @@
 			// Smaller, more responsive offset
 			const offset = navbarHeight + 30;
 
+			console.log(`Scroll position: ${scrollPosition}, offset: ${offset}`);
+
 			// If we're near the bottom of the page, always show the last section
 			if (scrollPosition + windowHeight >= documentHeight - 100) {
+				console.log(`Near bottom, returning resume`);
 				return 'resume';
 			}
 
@@ -1018,20 +1034,25 @@
 
 				if (section) {
 					const sectionTop = section.offsetTop;
+					console.log(`Section ${sectionId}: top=${sectionTop}, threshold=${scrollPosition + offset}`);
 
 					// Much more responsive - activate as soon as we start entering a section
 					if (scrollPosition + offset >= sectionTop) {
 						activeSection = sectionId;
+						console.log(`Setting active section to: ${activeSection}`);
 						break;
 					}
 				}
 			}
 
+			console.log(`Final active section: ${activeSection}`);
 			return activeSection;
 		}
 
 		// Handle scroll events - IMMEDIATE and aggressive
 		function handleScroll() {
+			console.log(`Scroll event triggered at position: ${window.pageYOffset}`);
+
 			// Update navbar scroll effect immediately
 			const navbar = document.querySelector('.navbar');
 			const scrolled = window.pageYOffset > 50;
@@ -1039,6 +1060,7 @@
 
 			// Update active section IMMEDIATELY - no timeout, no delay
 			const activeSection = getActiveSection();
+			console.log(`Detected active section: ${activeSection}`);
 			setActiveNavLink(activeSection);
 		}
 
@@ -1075,26 +1097,18 @@
 				anchor.addEventListener('click', function (e) {
 					e.preventDefault();
 					const targetId = this.getAttribute('href').substring(1);
+					console.log(`Clicked link to: ${targetId}`);
 					scrollToSection(targetId);
 				});
 			});
 
-			// Set up scroll event listener - use throttling for performance but immediate updates
-			let ticking = false;
-			function onScroll() {
-				if (!ticking) {
-					requestAnimationFrame(() => {
-						handleScroll();
-						ticking = false;
-					});
-					ticking = true;
-				}
-			}
-
-			window.addEventListener('scroll', onScroll, { passive: true });
+			// Set up scroll event listener - simpler approach
+			console.log(`Setting up scroll listener`);
+			window.addEventListener('scroll', handleScroll, { passive: true });
 
 			// Set initial active state
 			setTimeout(() => {
+				console.log(`Setting initial active state`);
 				setActiveNavLink('contact');
 			}, 100);
 		}
