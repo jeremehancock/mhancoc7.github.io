@@ -959,32 +959,179 @@
 	</div>
 
 	<script>
+		// Navigation state variables
+		let isScrollingProgrammatically = false;
+		let scrollTimeout = null;
+		let lastActiveSection = null;
+
 		// Mobile viewport height calculation
 		function setMobileVH() {
 			const vh = window.innerHeight * 0.01;
 			document.documentElement.style.setProperty('--mobile-vh', `${vh}px`);
 		}
 
-		// Set initial mobile viewport height
-		setMobileVH();
+		// Get all sections and nav links
+		function getNavigationElements() {
+			const sections = ['contact', 'projects', 'resume'];
+			const navLinks = document.querySelectorAll('.nav-links a');
+			return { sections, navLinks };
+		}
 
-		// Prevent scroll restoration and force scroll to top
+		// Set active navigation link (single source of truth)
+		function setActiveNavLink(activeSection) {
+			// Prevent unnecessary updates
+			if (lastActiveSection === activeSection) return;
+
+			lastActiveSection = activeSection;
+
+			const { navLinks } = getNavigationElements();
+
+			// Clear all active states first
+			navLinks.forEach(link => {
+				link.classList.remove('active');
+			});
+
+			// Set the new active link
+			const activeLink = document.querySelector(`.nav-links a[href="#${activeSection}"]`);
+			if (activeLink) {
+				activeLink.classList.add('active');
+			}
+		}
+
+		// Determine which section should be active based on scroll position
+		function getActiveSection() {
+			const { sections } = getNavigationElements();
+			const scrollPosition = window.pageYOffset;
+			const windowHeight = window.innerHeight;
+			const documentHeight = document.documentElement.scrollHeight;
+
+			// If we're near the bottom of the page, always show the last section
+			if (scrollPosition + windowHeight >= documentHeight - 100) {
+				return sections[sections.length - 1];
+			}
+
+			// Find the section that's most visible in the viewport
+			let activeSection = sections[0]; // default to first section
+			let maxVisibleArea = 0;
+
+			sections.forEach(sectionId => {
+				const section = document.getElementById(sectionId);
+				if (!section) return;
+
+				const rect = section.getBoundingClientRect();
+				const navbarHeight = 60; // navbar height
+
+				// Calculate visible area of this section
+				const visibleTop = Math.max(0, navbarHeight - rect.top);
+				const visibleBottom = Math.min(windowHeight, rect.bottom);
+				const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+				const visibleArea = visibleHeight * rect.width;
+
+				// If this section has more visible area, it should be active
+				if (visibleArea > maxVisibleArea) {
+					maxVisibleArea = visibleArea;
+					activeSection = sectionId;
+				}
+			});
+
+			return activeSection;
+		}
+
+		// Handle scroll events
+		function handleScroll() {
+			// Clear any existing timeout
+			if (scrollTimeout) {
+				clearTimeout(scrollTimeout);
+			}
+
+			// Update navbar scroll effect immediately
+			const navbar = document.querySelector('.navbar');
+			const scrolled = window.pageYOffset > 50;
+			navbar.classList.toggle('scrolled', scrolled);
+
+			// Only update active section if we're not in the middle of programmatic scrolling
+			if (!isScrollingProgrammatically) {
+				// Debounce the active section update
+				scrollTimeout = setTimeout(() => {
+					const activeSection = getActiveSection();
+					setActiveNavLink(activeSection);
+				}, 50);
+			}
+		}
+
+		// Handle smooth scrolling to sections
+		function scrollToSection(targetId) {
+			const targetElement = document.getElementById(targetId);
+			if (!targetElement) return;
+
+			// Set flag to prevent scroll spy from interfering
+			isScrollingProgrammatically = true;
+
+			// Immediately set the clicked link as active
+			setActiveNavLink(targetId);
+
+			// Calculate scroll position
+			const navbarHeight = document.querySelector('.navbar').offsetHeight;
+			const targetPosition = targetElement.offsetTop - navbarHeight - 20;
+
+			// Perform smooth scroll
+			window.scrollTo({
+				top: targetPosition,
+				behavior: 'smooth'
+			});
+
+			// Reset the flag after scrolling is likely complete
+			setTimeout(() => {
+				isScrollingProgrammatically = false;
+				// Update active section based on final position
+				const activeSection = getActiveSection();
+				setActiveNavLink(activeSection);
+			}, 1000); // Adjust timing based on scroll duration
+		}
+
+		// Initialize navigation system
+		function initializeNavigation() {
+			// Set up scroll event listener with passive option for better performance
+			window.addEventListener('scroll', handleScroll, { passive: true });
+
+			// Set up click handlers for navigation links
+			document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+				anchor.addEventListener('click', function (e) {
+					e.preventDefault();
+					const targetId = this.getAttribute('href').substring(1);
+					scrollToSection(targetId);
+				});
+			});
+
+			// Set initial active state
+			setTimeout(() => {
+				const activeSection = getActiveSection();
+				setActiveNavLink(activeSection);
+			}, 100);
+		}
+
+		// Force scroll to top and reset navigation
 		function forceScrollToTop() {
 			if ('scrollRestoration' in history) {
 				history.scrollRestoration = 'manual';
 			}
 
-			// Multiple methods to ensure scroll to top
 			window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
 			document.documentElement.scrollTop = 0;
 			document.body.scrollTop = 0;
 
+			// Reset navigation state
+			isScrollingProgrammatically = false;
+			lastActiveSection = null;
+
 			// Force layout recalculation
 			document.body.offsetHeight;
-		}
 
-		// Initial scroll to top
-		forceScrollToTop();
+			// Set contact as active since we're at the top
+			setTimeout(() => {
+				setActiveNavLink('contact');
+			}, 50);
+		}
 
 		// Particle animation
 		function createParticles() {
@@ -1001,145 +1148,6 @@
 				particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
 				particles.appendChild(particle);
 			}
-		}
-
-		// Navbar scroll effect
-		function handleNavbarScroll() {
-			const navbar = document.querySelector('.navbar');
-			const scrolled = window.scrollY > 50;
-			navbar.classList.toggle('scrolled', scrolled);
-		}
-
-		// Scroll spy functionality
-		let lockedActiveLink = null;
-		let lockTimeout = null;
-		let lastScrollY = 0;
-		let userScrolling = false;
-
-		function updateActiveNavLink() {
-			// If we have a locked active link, don't change anything
-			if (lockedActiveLink) return;
-
-			const sections = ['contact', 'projects', 'resume'];
-			const navLinks = document.querySelectorAll('.nav-links a');
-			const scrollPosition = window.scrollY + 150;
-
-			let activeSection = null;
-			let maxProgress = -1;
-
-			// Find which section we're most "into" based on scroll progress
-			sections.forEach(sectionId => {
-				const section = document.getElementById(sectionId);
-				if (section) {
-					const sectionTop = section.offsetTop;
-					const sectionHeight = section.offsetHeight;
-					const sectionBottom = sectionTop + sectionHeight;
-
-					// Calculate how far we've scrolled into this section
-					if (scrollPosition >= sectionTop && scrollPosition <= sectionBottom) {
-						const progress = (scrollPosition - sectionTop) / sectionHeight;
-						if (progress > maxProgress) {
-							maxProgress = progress;
-							activeSection = sectionId;
-						}
-					}
-				}
-			});
-
-			// Fallback: if no section detected, determine by position
-			if (!activeSection) {
-				const contactSection = document.getElementById('contact');
-				const projectsSection = document.getElementById('projects');
-				const resumeSection = document.getElementById('resume');
-
-				if (contactSection && scrollPosition < contactSection.offsetTop + contactSection.offsetHeight / 2) {
-					activeSection = 'contact';
-				} else if (projectsSection && scrollPosition < projectsSection.offsetTop + projectsSection.offsetHeight / 2) {
-					activeSection = 'projects';
-				} else if (resumeSection) {
-					activeSection = 'resume';
-				}
-			}
-
-			// Default to contact if still nothing
-			if (!activeSection) {
-				activeSection = 'contact';
-			}
-
-			// Atomically update active states
-			requestAnimationFrame(() => {
-				// Clear all first
-				navLinks.forEach(link => link.classList.remove('active'));
-
-				// Set exactly one active
-				const targetLink = document.querySelector(`.nav-links a[href="#${activeSection}"]`);
-				if (targetLink && !targetLink.classList.contains('active')) {
-					targetLink.classList.add('active');
-				}
-			});
-		}
-
-		function clearLock() {
-			if (lockTimeout) {
-				clearTimeout(lockTimeout);
-				lockTimeout = null;
-			}
-			lockedActiveLink = null;
-		}
-
-		function setActiveLink(link) {
-			// Clear any existing lock first
-			clearLock();
-
-			// Atomically clear and set
-			requestAnimationFrame(() => {
-				document.querySelectorAll('.nav-links a').forEach(l => {
-					l.classList.remove('active');
-				});
-				link.classList.add('active');
-			});
-
-			// Lock this link as active
-			lockedActiveLink = link;
-
-			// Set new timeout
-			const isMobile = window.innerWidth <= 768;
-			const delay = isMobile ? 2500 : 1500;
-
-			lockTimeout = setTimeout(() => {
-				clearLock();
-				updateActiveNavLink();
-			}, delay);
-		}
-
-		// Detect manual scrolling vs programmatic scrolling
-		function detectUserScrolling() {
-			const currentScrollY = window.scrollY;
-			if (Math.abs(currentScrollY - lastScrollY) > 5) {
-				userScrolling = true;
-				// If user is manually scrolling, clear any existing locks
-				if (lockedActiveLink) {
-					clearLock();
-					updateActiveNavLink();
-				}
-			}
-			lastScrollY = currentScrollY;
-
-			// Reset user scrolling flag after a delay
-			setTimeout(() => {
-				userScrolling = false;
-			}, 100);
-		}
-
-		// Debounced scroll handler
-		let scrollTimeout;
-		function handleScroll() {
-			detectUserScrolling();
-			clearTimeout(scrollTimeout);
-			scrollTimeout = setTimeout(() => {
-				handleNavbarScroll();
-				updateActiveNavLink();
-			}, 100);
 		}
 
 		async function loadResumeData() {
@@ -1275,11 +1283,8 @@
 						forceScrollToTop();
 						// Initialize animations after content is shown
 						initializeAnimations();
-						// Set initial active state
-						const contactLink = document.querySelector('.nav-links a[href="#contact"]');
-						if (contactLink) {
-							setActiveLink(contactLink);
-						}
+						// Initialize navigation after content is ready
+						initializeNavigation();
 					});
 				}, 300);
 			}, 1200);
@@ -1317,22 +1322,10 @@
 			// Initialize page
 			initializePage();
 
-			// Set initial active state
-			setTimeout(() => {
-				const contactLink = document.querySelector('.nav-links a[href="#contact"]');
-				if (contactLink) {
-					setActiveLink(contactLink);
-				}
-			}, 100);
-
-			// Use debounced scroll handler
-			window.addEventListener('scroll', handleScroll);
-
 			// Handle mobile viewport changes
 			window.addEventListener('resize', () => {
 				setMobileVH();
-				// Prevent unwanted scrolling on resize
-				if (window.scrollY < 100) {
+				if (window.pageYOffset < 100) {
 					forceScrollToTop();
 				}
 			});
@@ -1341,44 +1334,17 @@
 			window.addEventListener('orientationchange', () => {
 				setTimeout(() => {
 					setMobileVH();
-					if (window.scrollY < 100) {
+					if (window.pageYOffset < 100) {
 						forceScrollToTop();
 					}
 				}, 300);
-			});
-
-			// Smooth scrolling for navigation links
-			document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-				anchor.addEventListener('click', function (e) {
-					e.preventDefault();
-					const target = document.querySelector(this.getAttribute('href'));
-					if (target) {
-						// Lock this link as active (prevents scroll spy from changing it)
-						setActiveLink(this);
-
-						// Calculate scroll position
-						const navbarHeight = document.querySelector('.navbar').offsetHeight;
-						const targetPosition = target.offsetTop - navbarHeight + 80;
-
-						window.scrollTo({
-							top: targetPosition,
-							behavior: 'smooth'
-						});
-					}
-				});
 			});
 		});
 
 		// Handle page load
 		window.addEventListener('load', () => {
-			// Final scroll to top after everything is loaded
 			setTimeout(() => {
 				forceScrollToTop();
-				// Set initial active state after final positioning
-				const contactLink = document.querySelector('.nav-links a[href="#contact"]');
-				if (contactLink) {
-					setActiveLink(contactLink);
-				}
 			}, 100);
 		});
 
