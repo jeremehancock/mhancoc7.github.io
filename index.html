@@ -222,6 +222,7 @@
 
 		.nav-links a.active {
 			color: var(--text-primary);
+			background: rgba(255, 255, 255, 0.1);
 		}
 
 		.nav-links a.active::before {
@@ -242,6 +243,7 @@
 
 		.nav-links a:hover {
 			color: var(--text-primary);
+			background: rgba(255, 255, 255, 0.05);
 		}
 
 		.nav-links a:hover::before {
@@ -1009,7 +1011,7 @@
 		}
 
 		// Scroll spy functionality
-		let lockedActiveLink = null; // Store which link should stay active
+		let lockedActiveLink = null;
 		let lockTimeout = null;
 
 		function updateActiveNavLink() {
@@ -1018,42 +1020,71 @@
 
 			const sections = ['contact', 'projects', 'resume'];
 			const navLinks = document.querySelectorAll('.nav-links a');
-			const scrollPosition = window.scrollY + 200;
+			const scrollPosition = window.scrollY + 150;
 
-			let activeSection = 'contact';
+			let activeSection = null;
+			let maxProgress = -1;
 
+			// Find which section we're most "into" based on scroll progress
 			sections.forEach(sectionId => {
 				const section = document.getElementById(sectionId);
 				if (section) {
 					const sectionTop = section.offsetTop;
-					const sectionBottom = sectionTop + section.offsetHeight;
+					const sectionHeight = section.offsetHeight;
+					const sectionBottom = sectionTop + sectionHeight;
 
-					if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
-						activeSection = sectionId;
+					// Calculate how far we've scrolled into this section
+					if (scrollPosition >= sectionTop && scrollPosition <= sectionBottom) {
+						const progress = (scrollPosition - sectionTop) / sectionHeight;
+						if (progress > maxProgress) {
+							maxProgress = progress;
+							activeSection = sectionId;
+						}
 					}
 				}
 			});
 
-			// Clear all active states
-			navLinks.forEach(link => {
-				link.classList.remove('active');
-			});
+			// Fallback: if no section detected, determine by position
+			if (!activeSection) {
+				const contactSection = document.getElementById('contact');
+				const projectsSection = document.getElementById('projects');
+				const resumeSection = document.getElementById('resume');
 
-			// Set the active one
-			const targetLink = document.querySelector(`.nav-links a[href="#${activeSection}"]`);
-			if (targetLink) {
-				targetLink.classList.add('active');
+				if (contactSection && scrollPosition < contactSection.offsetTop + contactSection.offsetHeight / 2) {
+					activeSection = 'contact';
+				} else if (projectsSection && scrollPosition < projectsSection.offsetTop + projectsSection.offsetHeight / 2) {
+					activeSection = 'projects';
+				} else if (resumeSection) {
+					activeSection = 'resume';
+				}
 			}
+
+			// Default to contact if still nothing
+			if (!activeSection) {
+				activeSection = 'contact';
+			}
+
+			// Atomically update active states
+			requestAnimationFrame(() => {
+				// Clear all first
+				navLinks.forEach(link => link.classList.remove('active'));
+
+				// Set exactly one active
+				const targetLink = document.querySelector(`.nav-links a[href="#${activeSection}"]`);
+				if (targetLink && !targetLink.classList.contains('active')) {
+					targetLink.classList.add('active');
+				}
+			});
 		}
 
 		function setActiveLink(link) {
-			// Clear all first
-			document.querySelectorAll('.nav-links a').forEach(l => {
-				l.classList.remove('active');
+			// Atomically clear and set
+			requestAnimationFrame(() => {
+				document.querySelectorAll('.nav-links a').forEach(l => {
+					l.classList.remove('active');
+				});
+				link.classList.add('active');
 			});
-
-			// Set this one active
-			link.classList.add('active');
 
 			// Lock this link as active
 			lockedActiveLink = link;
@@ -1063,13 +1094,13 @@
 				clearTimeout(lockTimeout);
 			}
 
-			// Unlock after delay (longer on mobile)
+			// Unlock after delay
 			const isMobile = window.innerWidth <= 768;
-			const delay = isMobile ? 3000 : 1500;
+			const delay = isMobile ? 2500 : 1500;
 
 			lockTimeout = setTimeout(() => {
 				lockedActiveLink = null;
-				updateActiveNavLink(); // Update to correct state after unlock
+				updateActiveNavLink();
 			}, delay);
 		}
 
@@ -1080,7 +1111,7 @@
 			scrollTimeout = setTimeout(() => {
 				handleNavbarScroll();
 				updateActiveNavLink();
-			}, 150);
+			}, 100);
 		}
 
 		async function loadResumeData() {
