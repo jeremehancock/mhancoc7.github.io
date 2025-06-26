@@ -612,6 +612,11 @@
 			document.querySelector('.loading').style.display = 'none';
 			document.getElementById('content').classList.remove('hidden');
 
+			// Force scroll to top on mobile after content loads
+			setTimeout(() => {
+				window.scrollTo(0, 0);
+			}, 100);
+
 			// Initialize intersection observer for animations
 			const observerOptions = {
 				root: null,
