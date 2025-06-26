@@ -222,7 +222,6 @@
 
 		.nav-links a.active {
 			color: var(--text-primary);
-			background: rgba(255, 255, 255, 0.1);
 		}
 
 		.nav-links a.active::before {
@@ -1051,8 +1050,9 @@
 			const documentHeight = document.documentElement.scrollHeight;
 			const navbarHeight = 60;
 
-			// Smaller, more responsive offset
-			const offset = navbarHeight + 30;
+			// Larger offset to ensure we're well into a section before it becomes active
+			// This prevents the previous section from being visible when switching
+			const offset = navbarHeight + Math.min(windowHeight * 0.4, 300);
 
 			// If we're near the bottom of the page, always show the last section
 			if (scrollPosition + windowHeight >= documentHeight - 100) {
