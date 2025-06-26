@@ -979,8 +979,8 @@
 
 		// Set active navigation link (single source of truth)
 		function setActiveNavLink(activeSection) {
-			// Prevent unnecessary updates
-			if (lastActiveSection === activeSection) return;
+			// Remove the lastActiveSection check temporarily to ensure updates always happen
+			// if (lastActiveSection === activeSection) return;
 
 			lastActiveSection = activeSection;
 
@@ -1003,6 +1003,9 @@
 				if (activeLink) {
 					activeLink.classList.add('active');
 				}
+
+				// Debug logging (remove this later)
+				console.log(`Active section set to: ${activeSection}`);
 			});
 		}
 
@@ -1014,17 +1017,22 @@
 			const documentHeight = document.documentElement.scrollHeight;
 			const navbarHeight = 60;
 
+			// Debug logging
+			console.log(`Scroll position: ${scrollPosition}, Window height: ${windowHeight}`);
+
 			// If we're near the bottom of the page, always show the last section
 			if (scrollPosition + windowHeight >= documentHeight - 100) {
+				console.log('Near bottom, returning resume');
 				return sections[sections.length - 1];
 			}
 
 			// If we're at the very top, always show the first section
 			if (scrollPosition < 100) {
+				console.log('At top, returning contact');
 				return sections[0];
 			}
 
-			// Find the section that has its center most visible in the viewport
+			// Check each section and find which one is most prominently displayed
 			let activeSection = sections[0];
 			let bestScore = -1;
 
@@ -1035,36 +1043,37 @@
 				const rect = section.getBoundingClientRect();
 				const sectionTop = rect.top;
 				const sectionBottom = rect.bottom;
-				const sectionCenter = (sectionTop + sectionBottom) / 2;
-				const viewportCenter = windowHeight / 2;
+				const sectionHeight = rect.height;
 
 				// Calculate how much of the section is visible
 				const visibleTop = Math.max(sectionTop, navbarHeight);
 				const visibleBottom = Math.min(sectionBottom, windowHeight);
 				const visibleHeight = Math.max(0, visibleBottom - visibleTop);
-				const sectionHeight = rect.height;
 				const visibilityRatio = sectionHeight > 0 ? visibleHeight / sectionHeight : 0;
 
-				// Calculate distance from section center to viewport center (closer is better)
-				const centerDistance = Math.abs(sectionCenter - viewportCenter);
-				const maxDistance = windowHeight;
-				const centerScore = Math.max(0, 1 - centerDistance / maxDistance);
+				// Prefer sections that have their top part visible (within first 40% of viewport)
+				const sectionTopInViewport = sectionTop <= windowHeight * 0.4;
+				const topBonus = sectionTopInViewport ? 0.3 : 0;
 
-				// Combined score: visibility ratio + center proximity
-				const combinedScore = (visibilityRatio * 0.7) + (centerScore * 0.3);
+				const combinedScore = visibilityRatio + topBonus;
 
-				// If this section has a better score and is reasonably visible, make it active
-				if (combinedScore > bestScore && visibilityRatio > 0.1) {
+				console.log(`Section ${sectionId}: visibility=${visibilityRatio.toFixed(2)}, topBonus=${topBonus}, score=${combinedScore.toFixed(2)}`);
+
+				// If this section has a better score and is reasonably visible
+				if (combinedScore > bestScore && visibilityRatio > 0.2) {
 					bestScore = combinedScore;
 					activeSection = sectionId;
 				}
 			});
 
+			console.log(`Best section: ${activeSection} with score: ${bestScore.toFixed(2)}`);
 			return activeSection;
 		}
 
 		// Handle scroll events
 		function handleScroll() {
+			console.log('Scroll event fired'); // Debug logging
+
 			// Clear any existing timeout
 			if (scrollTimeout) {
 				clearTimeout(scrollTimeout);
@@ -1075,8 +1084,9 @@
 			const scrolled = window.pageYOffset > 50;
 			navbar.classList.toggle('scrolled', scrolled);
 
-			// Always update active section based on scroll position with a small debounce
+			// Always update active section based on scroll position - no blocking
 			scrollTimeout = setTimeout(() => {
+				console.log('Scroll timeout fired, updating active section');
 				const activeSection = getActiveSection();
 				setActiveNavLink(activeSection);
 			}, 50);
@@ -1086,6 +1096,8 @@
 		function scrollToSection(targetId) {
 			const targetElement = document.getElementById(targetId);
 			if (!targetElement) return;
+
+			console.log(`Clicking link to scroll to: ${targetId}`); // Debug logging
 
 			// Clear any existing timeout
 			if (clickTimeout) {
@@ -1099,18 +1111,16 @@
 			const navbarHeight = document.querySelector('.navbar').offsetHeight;
 			const targetPosition = targetElement.offsetTop - navbarHeight - 20;
 
+			console.log(`Scrolling to position: ${targetPosition}`); // Debug logging
+
 			// Perform smooth scroll
 			window.scrollTo({
 				top: targetPosition,
 				behavior: 'smooth'
 			});
 
-			// After a very brief delay, let scroll spy take over completely
-			// This ensures the active link always reflects the actual visible section
-			clickTimeout = setTimeout(() => {
-				const activeSection = getActiveSection();
-				setActiveNavLink(activeSection);
-			}, 150);
+			// Don't block scroll spy - let it take over immediately
+			// Remove any delays or blocking
 		}
 
 		// Initialize navigation system
