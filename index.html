@@ -280,14 +280,27 @@
 			position: relative;
 		}
 
+		/* Override section styling for hero */
+		section.hero {
+			padding: 0;
+		}
+
 		/* Hero Section - Fixed for mobile */
 		.hero {
 			position: relative;
 			background: var(--gradient-bg);
 			overflow: hidden;
-			padding-top: 80px;
 			/* Ensure proper height on mobile */
 			min-height: calc(var(--mobile-vh, 1vh) * 100);
+			display: flex;
+			align-items: center;
+			padding: 0;
+		}
+
+		.hero .container {
+			margin-top: 80px;
+			/* Account for fixed navbar */
+			width: 100%;
 		}
 
 		.hero::before {
@@ -804,6 +817,11 @@
 		@media (max-width: 768px) {
 			.container {
 				padding: 0 1rem;
+			}
+
+			.hero .container {
+				margin-top: 60px;
+				/* Smaller offset for mobile */
 			}
 
 			.menu-button {
