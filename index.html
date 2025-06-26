@@ -1060,12 +1060,14 @@
 
 		// Handle scroll events
 		function handleScroll() {
-			// Detect scroll direction
+			// Detect scroll direction and movement
 			const currentScrollY = window.pageYOffset;
+			const scrollMovement = Math.abs(currentScrollY - lastScrollY);
 			scrollDirection = currentScrollY > lastScrollY ? 'down' : 'up';
 
-			// If user is manually scrolling (significant movement), clear programmatic state
-			if (Math.abs(currentScrollY - lastScrollY) > 10 && !isScrollingProgrammatically) {
+			// If we're in programmatic scroll mode but detect significant manual movement,
+			// the user has started manually scrolling, so clear programmatic state
+			if (isScrollingProgrammatically && scrollMovement > 15) {
 				// Clear any pending programmatic scroll timeout
 				if (programmaticScrollTimeout) {
 					clearTimeout(programmaticScrollTimeout);
@@ -1086,7 +1088,7 @@
 			const scrolled = currentScrollY > 50;
 			navbar.classList.toggle('scrolled', scrolled);
 
-			// Only update active section if we're not in the middle of programmatic scrolling
+			// Always update active section based on scroll position when not programmatically scrolling
 			if (!isScrollingProgrammatically) {
 				// Debounce the active section update
 				scrollTimeout = setTimeout(() => {
