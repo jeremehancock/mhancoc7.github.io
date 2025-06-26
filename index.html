@@ -1051,7 +1051,7 @@
 
 			// Much larger detection offset to ensure previous section is completely hidden
 			// This is separate from scroll target - we want conservative section switching
-			const offset = navbarHeight + 500;
+			const offset = navbarHeight + 400;
 
 			// If we're near the bottom of the page, always show the last section
 			if (scrollPosition + windowHeight >= documentHeight - 100) {
@@ -1119,9 +1119,9 @@
 			// Set flag to indicate we're programmatically scrolling
 			isScrollingToTarget = true;
 
-			// Calculate scroll position - position section title just below header
+			// Calculate scroll position - position section title right below header
 			const navbarHeight = document.querySelector('.navbar').offsetHeight;
-			const scrollOffset = navbarHeight + 20; // Small margin for clean positioning
+			const scrollOffset = navbarHeight - 10; // Slightly overlap to hide previous section
 			const targetPosition = targetElement.offsetTop - scrollOffset;
 
 			// Perform smooth scroll
