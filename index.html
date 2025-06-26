@@ -52,9 +52,6 @@
 		html {
 			scroll-behavior: smooth;
 			scroll-padding-top: 100px;
-			/* Fix mobile scrolling issues */
-			-webkit-text-size-adjust: 100%;
-			-webkit-touch-callout: none;
 		}
 
 		body {
@@ -65,6 +62,8 @@
 			overflow-x: hidden;
 			-webkit-font-smoothing: antialiased;
 			-moz-osx-font-smoothing: grayscale;
+			/* Ensure proper initial positioning */
+			position: relative;
 		}
 
 		/* Animated Background */
@@ -111,6 +110,8 @@
 			align-items: center;
 			z-index: 1000;
 			backdrop-filter: blur(10px);
+			/* Prevent any layout shifts */
+			overflow: hidden;
 		}
 
 		.loading-content {
@@ -254,8 +255,6 @@
 		/* Section Styling */
 		section {
 			min-height: 100vh;
-			min-height: 100dvh;
-			/* Dynamic viewport height for mobile */
 			display: flex;
 			align-items: center;
 			padding: 6rem 0;
@@ -267,9 +266,6 @@
 			position: relative;
 			background: var(--gradient-bg);
 			overflow: hidden;
-			min-height: 100vh;
-			min-height: 100dvh;
-			/* Dynamic viewport height for mobile */
 		}
 
 		.hero::before {
@@ -788,22 +784,6 @@
 				padding: 0 1rem;
 			}
 
-			/* Fix mobile viewport issues */
-			.hero {
-				min-height: 100vh;
-				min-height: 100dvh;
-			}
-
-			section {
-				min-height: auto;
-				padding: 4rem 0;
-			}
-
-			/* Ensure proper mobile rendering */
-			body {
-				-webkit-overflow-scrolling: touch;
-			}
-
 			.menu-button {
 				display: block;
 			}
@@ -1103,16 +1083,23 @@
 			createParticles();
 
 			// Hide loading screen and show content
-			const isMobile = window.innerWidth <= 768;
-			const loadingDelay = isMobile ? 800 : 1500;
-
 			setTimeout(() => {
+				// Ensure we're at the top before showing content
+				window.scrollTo(0, 0);
+				document.documentElement.scrollTop = 0;
+				document.body.scrollTop = 0;
+
 				document.querySelector('.loading').style.display = 'none';
 				document.getElementById('content').classList.remove('hidden');
 
+				// Force another scroll to top after content is visible
+				requestAnimationFrame(() => {
+					window.scrollTo(0, 0);
+				});
+
 				// Initialize intersection observer for animations
 				initializeAnimations();
-			}, loadingDelay);
+			}, 1500);
 		}
 
 		function initializeAnimations() {
@@ -1138,10 +1125,10 @@
 
 		// Initialize the page when DOM is loaded
 		document.addEventListener('DOMContentLoaded', () => {
-			// Ensure mobile starts at top
-			if (window.innerWidth <= 768) {
-				window.scrollTo(0, 0);
-			}
+			// Force scroll to top immediately
+			window.scrollTo(0, 0);
+			document.documentElement.scrollTop = 0;
+			document.body.scrollTop = 0;
 
 			initializePage();
 
@@ -1197,6 +1184,18 @@
 					}
 				});
 			});
+
+			// Additional fix for mobile scroll issues
+			window.addEventListener('load', () => {
+				setTimeout(() => {
+					window.scrollTo(0, 0);
+				}, 100);
+			});
+
+			// Prevent scroll restoration
+			if ('scrollRestoration' in history) {
+				history.scrollRestoration = 'manual';
+			}
 		});
 	</script>
 
