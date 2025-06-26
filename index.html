@@ -963,6 +963,7 @@
 		let scrollTimeout = null;
 		let lastActiveSection = null;
 		let clickTimeout = null;
+		let recentlyClicked = false;
 
 		// Mobile viewport height calculation
 		function setMobileVH() {
@@ -986,16 +987,24 @@
 
 			const { navLinks } = getNavigationElements();
 
-			// Clear all active states first
-			navLinks.forEach(link => {
-				link.classList.remove('active');
-			});
+			// Use requestAnimationFrame to ensure atomic DOM updates
+			requestAnimationFrame(() => {
+				// Clear ALL active states first - be very explicit
+				navLinks.forEach(link => {
+					link.classList.remove('active');
+				});
 
-			// Set the new active link
-			const activeLink = document.querySelector(`.nav-links a[href="#${activeSection}"]`);
-			if (activeLink) {
-				activeLink.classList.add('active');
-			}
+				// Double-check by also querying for any active links and clearing them
+				document.querySelectorAll('.nav-links a.active').forEach(link => {
+					link.classList.remove('active');
+				});
+
+				// Now set exactly one active link
+				const activeLink = document.querySelector(`.nav-links a[href="#${activeSection}"]`);
+				if (activeLink) {
+					activeLink.classList.add('active');
+				}
+			});
 		}
 
 		// Determine which section should be active based on scroll position
@@ -1067,11 +1076,14 @@
 			const scrolled = window.pageYOffset > 50;
 			navbar.classList.toggle('scrolled', scrolled);
 
-			// Always update active section with a small debounce
-			scrollTimeout = setTimeout(() => {
-				const activeSection = getActiveSection();
-				setActiveNavLink(activeSection);
-			}, 100);
+			// Don't update active section immediately after a click to prevent interference
+			if (!recentlyClicked) {
+				// Update active section with a small debounce
+				scrollTimeout = setTimeout(() => {
+					const activeSection = getActiveSection();
+					setActiveNavLink(activeSection);
+				}, 100);
+			}
 		}
 
 		// Handle smooth scrolling to sections
@@ -1084,7 +1096,10 @@
 				clearTimeout(clickTimeout);
 			}
 
-			// Immediately set the clicked link as active
+			// Set flag to prevent scroll spy interference during initial scroll
+			recentlyClicked = true;
+
+			// Immediately set the clicked link as active (this will clear all others)
 			setActiveNavLink(targetId);
 
 			// Calculate scroll position
@@ -1097,13 +1112,13 @@
 				behavior: 'smooth'
 			});
 
-			// After scroll animation has had time to start (very brief),
-			// let the scroll spy take over and update based on actual position
+			// Allow scroll spy to resume after a brief delay
 			clickTimeout = setTimeout(() => {
-				// Force an immediate update based on current scroll position
+				recentlyClicked = false;
+				// Now let scroll spy take over based on actual position
 				const activeSection = getActiveSection();
 				setActiveNavLink(activeSection);
-			}, 100);
+			}, 300);
 		}
 
 		// Initialize navigation system
@@ -1148,6 +1163,7 @@
 
 			// Reset navigation state
 			lastActiveSection = null;
+			recentlyClicked = false;
 
 			// Force layout recalculation
 			document.body.offsetHeight;
