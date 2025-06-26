@@ -55,7 +55,8 @@
 
 		html {
 			scroll-behavior: smooth;
-			scroll-padding-top: 100px;
+			scroll-padding-top: 70px;
+			/* Adjust for shorter navbar */
 			overflow-x: hidden;
 			height: 100%;
 			/* Prevent initial scroll issues */
@@ -179,7 +180,7 @@
 			top: 0;
 			left: 0;
 			right: 0;
-			height: 80px;
+			height: 60px;
 			background: rgba(10, 10, 10, 0.8);
 			backdrop-filter: blur(20px);
 			border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -189,7 +190,7 @@
 
 		.navbar.scrolled {
 			background: rgba(10, 10, 10, 0.95);
-			height: 70px;
+			height: 55px;
 		}
 
 		.nav-container {
@@ -198,17 +199,9 @@
 			margin: 0 auto;
 			padding: 0 2rem;
 			display: flex;
-			justify-content: space-between;
+			justify-content: center;
+			/* Center the navigation on desktop */
 			align-items: center;
-		}
-
-		.nav-logo {
-			font-size: 1.5rem;
-			font-weight: 700;
-			background: var(--gradient-tertiary);
-			-webkit-background-clip: text;
-			-webkit-text-fill-color: transparent;
-			background-clip: text;
 		}
 
 		.nav-links {
@@ -293,8 +286,8 @@
 		}
 
 		.hero .container {
-			margin-top: 80px;
-			/* Account for fixed navbar */
+			margin-top: 60px;
+			/* Account for smaller fixed navbar */
 			width: 100%;
 		}
 
@@ -790,14 +783,19 @@
 				padding: 0 1rem;
 			}
 
+			.nav-container {
+				justify-content: flex-end;
+				/* Align menu button to the right on mobile */
+			}
+
 			.hero {
 				padding: 6rem 0;
 				/* Reduce padding on mobile */
 			}
 
 			.hero .container {
-				margin-top: 60px;
-				/* Smaller offset for mobile */
+				margin-top: 40px;
+				/* Smaller offset for mobile with shorter navbar */
 			}
 
 			.menu-button {
@@ -806,17 +804,25 @@
 
 			.nav-links {
 				position: fixed;
-				top: 80px;
+				top: 60px;
+				/* Match initial navbar height */
 				right: -100%;
 				flex-direction: column;
 				gap: 0;
 				background: rgba(10, 10, 10, 0.95);
 				backdrop-filter: blur(20px);
 				width: 280px;
-				height: calc(var(--mobile-vh, 1vh) * 100 - 80px);
+				height: calc(var(--mobile-vh, 1vh) * 100 - 60px);
 				padding: 2rem 0;
-				transition: right 0.3s ease;
+				transition: right 0.3s ease, top 0.3s ease;
+				/* Add transition for top */
 				border-left: var(--border-glass);
+			}
+
+			.nav-links.scrolled {
+				top: 55px;
+				/* Match scrolled navbar height */
+				height: calc(var(--mobile-vh, 1vh) * 100 - 55px);
 			}
 
 			.nav-links.active {
@@ -912,7 +918,6 @@
 		<!-- Navigation -->
 		<nav class="navbar">
 			<div class="nav-container">
-				<div class="nav-logo">Portfolio</div>
 				<button class="menu-button" aria-label="Toggle menu">
 					<i class="fas fa-bars"></i>
 				</button>
@@ -1022,8 +1027,13 @@
 		// Navbar scroll effect
 		function handleNavbarScroll() {
 			const navbar = document.querySelector('.navbar');
+			const navLinks = document.querySelector('.nav-links');
 			const scrolled = window.scrollY > 50;
 			navbar.classList.toggle('scrolled', scrolled);
+			// Also apply scrolled class to nav-links for mobile positioning
+			if (navLinks) {
+				navLinks.classList.toggle('scrolled', scrolled);
+			}
 		}
 
 		async function loadResumeData() {
