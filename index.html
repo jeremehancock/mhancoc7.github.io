@@ -1065,9 +1065,9 @@
 			const scrollMovement = Math.abs(currentScrollY - lastScrollY);
 			scrollDirection = currentScrollY > lastScrollY ? 'down' : 'up';
 
-			// If we're in programmatic scroll mode but detect significant manual movement,
-			// the user has started manually scrolling, so clear programmatic state
-			if (isScrollingProgrammatically && scrollMovement > 15) {
+			// If we detect ANY scroll movement while in programmatic mode,
+			// assume user has taken control and clear programmatic state immediately
+			if (isScrollingProgrammatically && scrollMovement > 5) {
 				// Clear any pending programmatic scroll timeout
 				if (programmaticScrollTimeout) {
 					clearTimeout(programmaticScrollTimeout);
@@ -1088,13 +1088,13 @@
 			const scrolled = currentScrollY > 50;
 			navbar.classList.toggle('scrolled', scrolled);
 
-			// Always update active section based on scroll position when not programmatically scrolling
+			// Always update active section when not in programmatic scroll mode
 			if (!isScrollingProgrammatically) {
 				// Debounce the active section update
 				scrollTimeout = setTimeout(() => {
 					const activeSection = getActiveSection();
 					setActiveNavLink(activeSection);
-				}, 50);
+				}, 30); // Reduced delay for more responsive updates
 			}
 		}
 
@@ -1106,9 +1106,10 @@
 			// Clear any existing programmatic scroll timeout
 			if (programmaticScrollTimeout) {
 				clearTimeout(programmaticScrollTimeout);
+				programmaticScrollTimeout = null;
 			}
 
-			// Set flag to prevent scroll spy from interfering
+			// Set flag to prevent scroll spy from interfering initially
 			isScrollingProgrammatically = true;
 
 			// Immediately set the clicked link as active
@@ -1118,44 +1119,17 @@
 			const navbarHeight = document.querySelector('.navbar').offsetHeight;
 			const targetPosition = targetElement.offsetTop - navbarHeight - 20;
 
-			// Store current position to detect when scrolling stops
-			const startPosition = window.pageYOffset;
-
 			// Perform smooth scroll
 			window.scrollTo({
 				top: targetPosition,
 				behavior: 'smooth'
 			});
 
-			// Function to check if scrolling has stopped
-			function checkScrollComplete() {
-				const currentPosition = window.pageYOffset;
-				const distanceToTarget = Math.abs(currentPosition - targetPosition);
-
-				// If we're close to the target or scroll position hasn't changed much
-				if (distanceToTarget < 50) {
-					// Reset the flag and update active section based on final position
-					isScrollingProgrammatically = false;
-					const activeSection = getActiveSection();
-					setActiveNavLink(activeSection);
-					return;
-				}
-
-				// Check again in a short interval
-				programmaticScrollTimeout = setTimeout(checkScrollComplete, 100);
-			}
-
-			// Start checking for scroll completion after a short delay
-			programmaticScrollTimeout = setTimeout(checkScrollComplete, 300);
-
-			// Failsafe: always reset after maximum time
-			setTimeout(() => {
-				if (isScrollingProgrammatically) {
-					isScrollingProgrammatically = false;
-					const activeSection = getActiveSection();
-					setActiveNavLink(activeSection);
-				}
-			}, 2000);
+			// Set a very short timeout to allow the scroll to start,
+			// then let manual scroll detection take over
+			programmaticScrollTimeout = setTimeout(() => {
+				isScrollingProgrammatically = false;
+			}, 500); // Much shorter timeout - manual detection will take over if user scrolls
 		}
 
 		// Initialize navigation system
