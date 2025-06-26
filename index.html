@@ -52,6 +52,9 @@
 		html {
 			scroll-behavior: smooth;
 			scroll-padding-top: 100px;
+			/* Prevent any initial scroll offset issues */
+			overflow-x: hidden;
+			height: 100%;
 		}
 
 		body {
@@ -65,6 +68,9 @@
 			position: relative;
 			margin: 0;
 			padding: 0;
+			min-height: 100%;
+			/* Prevent initial layout shift */
+			width: 100%;
 		}
 
 		/* Animated Background */
@@ -112,7 +118,7 @@
 			display: flex;
 			justify-content: center;
 			align-items: center;
-			z-index: 1000;
+			z-index: 9999;
 			overflow: hidden;
 		}
 
@@ -873,7 +879,7 @@
 <body>
 	<div class="animated-bg"></div>
 
-	<div class="loading">
+	<div class="loading" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999;">
 		<div class="loading-content">
 			<div class="loading-spinner"></div>
 			<div class="loading-text">Loading</div>
@@ -948,6 +954,11 @@
 	</div>
 
 	<script>
+		// Immediate scroll to top before any other scripts run
+		window.scrollTo(0, 0);
+		document.documentElement.scrollTop = 0;
+		document.body.scrollTop = 0;
+
 		// Particle animation
 		function createParticles() {
 			const particles = document.querySelector('.hero-particles');
@@ -1088,15 +1099,27 @@
 
 			// Hide loading screen and show content
 			setTimeout(() => {
+				// Multiple attempts to ensure proper positioning
+				window.scrollTo(0, 0);
+
 				document.querySelector('.loading').style.display = 'none';
 				document.getElementById('content').classList.remove('hidden');
 
-				// Ensure we're at the top after content loads
-				window.scrollTo(0, 0);
+				// Force layout recalculation and scroll to top
+				requestAnimationFrame(() => {
+					window.scrollTo(0, 0);
+					document.body.scrollTop = 0;
+					document.documentElement.scrollTop = 0;
+				});
+
+				// Final safety net after a short delay
+				setTimeout(() => {
+					window.scrollTo(0, 0);
+				}, 100);
 
 				// Initialize intersection observer for animations
 				initializeAnimations();
-			}, 800);
+			}, 1200);
 		}
 
 		function initializeAnimations() {
@@ -1122,14 +1145,20 @@
 
 		// Initialize the page when DOM is loaded
 		document.addEventListener('DOMContentLoaded', () => {
-			// Ensure page starts at top
-			document.body.scrollTop = 0;
-			document.documentElement.scrollTop = 0;
-
 			// Prevent browser scroll restoration
 			if ('scrollRestoration' in history) {
 				history.scrollRestoration = 'manual';
 			}
+
+			// Force immediate scroll to top
+			window.scrollTo(0, 0);
+			document.body.scrollTop = 0;
+			document.documentElement.scrollTop = 0;
+
+			// Wait for browser to finish layout calculations
+			setTimeout(() => {
+				window.scrollTo(0, 0);
+			}, 50);
 
 			initializePage();
 
@@ -1186,9 +1215,29 @@
 				});
 			});
 
+			// Handle viewport changes (mobile address bar, etc.)
+			let resizeTimer;
+			window.addEventListener('resize', () => {
+				clearTimeout(resizeTimer);
+				resizeTimer = setTimeout(() => {
+					if (window.scrollY < 100) {
+						window.scrollTo(0, 0);
+					}
+				}, 100);
+			});
+
 			// Additional safety net for mobile browsers
 			window.addEventListener('load', () => {
-				window.scrollTo(0, 0);
+				setTimeout(() => {
+					window.scrollTo(0, 0);
+				}, 200);
+			});
+
+			// Handle orientation change on mobile
+			window.addEventListener('orientationchange', () => {
+				setTimeout(() => {
+					window.scrollTo(0, 0);
+				}, 500);
 			});
 		});
 	</script>
