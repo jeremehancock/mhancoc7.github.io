@@ -1,19 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <title>Michael Jereme Hancock - Resumé</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="The Resumé of Michael Jereme Hancock."/>
 
-    <meta property="og:title" content="Michael Jereme Hancock - Resumé" />
-    <meta property="og:type" content="website" />
-    <meta property="og:description" content="The Resumé of Michael Jereme Hancock." />
-    <meta property="og:url" content="https://jeremehancock.com" />
-    <meta property="og:image" content="https://jeremehancock.com/images/profile.jpg" />
-    <meta property="og:site_name" content="jeremehancock.com" />
-    <link href='https://fonts.googleapis.com/css?family=Rokkitt:400,700' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.css">
+<head>
+	<title>Michael Jereme Hancock - Resumé</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="The Resumé of Michael Jereme Hancock." />
+
+	<meta property="og:title" content="Michael Jereme Hancock - Resumé" />
+	<meta property="og:type" content="website" />
+	<meta property="og:description" content="The Resumé of Michael Jereme Hancock." />
+	<meta property="og:url" content="https://jeremehancock.com" />
+	<meta property="og:image" content="https://jeremehancock.com/images/profile.jpg" />
+	<meta property="og:site_name" content="jeremehancock.com" />
+	<link href='https://fonts.googleapis.com/css?family=Rokkitt:400,700' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.css">
 	<link rel="icon" type="image/png" href="/images/favicons/favicon-96x96.png" sizes="96x96" />
 	<link rel="icon" type="image/svg+xml" href="/images/favicons/favicon.svg" />
 	<link rel="shortcut icon" href="/images/favicons/favicon.ico" />
@@ -40,6 +41,8 @@
 			scroll-behavior: smooth;
 			scroll-padding-top: 80px;
 			background-color: var(--bg-color);
+			/* Fix for mobile viewport height issues */
+			height: 100%;
 		}
 
 		body {
@@ -49,6 +52,8 @@
 			-webkit-font-smoothing: antialiased;
 			padding-top: 60px;
 			font-size: 1.1rem;
+			/* Fix for mobile viewport height issues */
+			min-height: 100%;
 		}
 
 		.container {
@@ -58,7 +63,10 @@
 		}
 
 		section {
-			min-height: 100vh;
+			/* Changed from min-height: 100vh to min-height: 100dvh for better mobile support */
+			min-height: 100dvh;
+			/* Fallback for browsers that don't support dvh */
+			min-height: calc(100vh - 60px);
 			display: flex;
 			align-items: center;
 			position: relative;
@@ -88,10 +96,24 @@
 		}
 
 		@keyframes dots {
-			0%, 20% { content: ''; }
-			40% { content: '.'; }
-			60% { content: '..'; }
-			80%, 100% { content: '...'; }
+
+			0%,
+			20% {
+				content: '';
+			}
+
+			40% {
+				content: '.';
+			}
+
+			60% {
+				content: '..';
+			}
+
+			80%,
+			100% {
+				content: '...';
+			}
 		}
 
 		/* Navigation */
@@ -151,7 +173,8 @@
 		.hero {
 			position: relative;
 			overflow: hidden;
-			margin-top: -50px;
+			/* Removed problematic margin-top */
+			margin-top: 0;
 		}
 
 		.hero-content {
@@ -350,7 +373,7 @@
 			float: right;
 			margin-top: 20px;
 			margin-bottom: 20px;
-			margin-right: 20px;	
+			margin-right: 20px;
 		}
 
 		/* Responsive Design */
@@ -368,6 +391,16 @@
 		}
 
 		@media (max-width: 768px) {
+
+			/* Mobile-specific fixes */
+			section {
+				/* Use viewport height that accounts for mobile browser UI */
+				min-height: 100svh;
+				/* Fallback */
+				min-height: calc(100vh - 60px);
+				padding: 2rem 0;
+			}
+
 			.menu-button {
 				display: block;
 			}
@@ -401,10 +434,6 @@
 				background: var(--card-bg);
 			}
 
-			section {
-				padding: 1rem 0;
-			}
-
 			.hero-content {
 				flex-direction: column;
 				align-items: center;
@@ -430,97 +459,187 @@
 			.resume-item {
 				padding: 1rem;
 			}
+
+			.resume-title {
+				flex-direction: column;
+				align-items: flex-start;
+				gap: 0.5rem;
+			}
 		}
-    </style>
+
+		/* Additional mobile fixes */
+		@supports (-webkit-touch-callout: none) {
+
+			/* iOS Safari specific fixes */
+			body {
+				/* Prevent elastic scrolling issues */
+				-webkit-overflow-scrolling: touch;
+			}
+		}
+	</style>
 </head>
+
 <body>
-    <div class="loading">
-        <div class="loading-text">Loading</div>
-    </div>
+	<div class="loading">
+		<div class="loading-text">Loading</div>
+	</div>
 
-    <div id="content" class="hidden">
-        <!-- Navigation -->
-        <nav class="navbar">
-            <div class="nav-container">
-                <button class="menu-button" aria-label="Toggle menu">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <ul class="nav-links">
-                    <li><a href="#contact">Contact</a></li>
-                    <li><a href="#projects">Projects</a></li>
-                    <li><a href="#resume">Resumé</a></li>
-                </ul>
-            </div>
-        </nav>
+	<div id="content" class="hidden">
+		<!-- Navigation -->
+		<nav class="navbar">
+			<div class="nav-container">
+				<button class="menu-button" aria-label="Toggle menu">
+					<i class="fas fa-bars"></i>
+				</button>
+				<ul class="nav-links">
+					<li><a href="#contact">Contact</a></li>
+					<li><a href="#projects">Projects</a></li>
+					<li><a href="#resume">Resumé</a></li>
+				</ul>
+			</div>
+		</nav>
 
-        <!-- Hero Section -->
+		<!-- Hero Section -->
 		<section class="hero" id="contact">
 			<div class="container">
 				<div class="hero-content">
-				    <img class="hero-profile-img" id="profileImg" alt="">
-				    <div class="hero-text">
-				        <h1 id="name"></h1>
-				        <p id="headline"></p>
-				        <div class="contact-links" id="contactLinks">
-				            <!-- Contact links will be inserted here -->
-				        </div>
-				    </div>
+					<img class="hero-profile-img" id="profileImg" alt="" src="https://via.placeholder.com/200">
+					<div class="hero-text">
+						<h1 id="name">Michael Jereme Hancock</h1>
+						<p id="headline">Senior Software Engineer & Full Stack Developer</p>
+						<div class="contact-links" id="contactLinks">
+							<a href="mailto:michael@jeremehancock.com" class="contact-link">
+								<i class="fas fa-envelope"></i>
+								<span>michael@jeremehancock.com</span>
+							</a>
+							<a href="https://linkedin.com/in/jeremehancock" class="contact-link" target="_blank">
+								<i class="fab fa-linkedin"></i>
+								<span>LinkedIn</span>
+							</a>
+							<a href="https://github.com/jeremehancock" class="contact-link" target="_blank">
+								<i class="fab fa-github"></i>
+								<span>GitHub</span>
+							</a>
+						</div>
+					</div>
 				</div>
 			</div>
 		</section>
 
-        <!-- Projects Section -->
-        <section id="projects">
-            <div class="container">
-                <h2 class="section-title">Projects</h2>
-                <div class="projects-grid" id="projectsGrid">
-                    <!-- Projects will be inserted here -->
-                </div>
-            </div>
-        </section>
+		<!-- Projects Section -->
+		<section id="projects">
+			<div class="container">
+				<h2 class="section-title">Projects</h2>
+				<div class="projects-grid" id="projectsGrid">
+					<div class="project-card fade-up">
+						<img src="https://via.placeholder.com/400x250" alt="Project 1" />
+						<div class="project-content">
+							<h3>Project One</h3>
+							<p>A full-stack web application built with modern technologies.</p>
+						</div>
+					</div>
+					<div class="project-card fade-up">
+						<img src="https://via.placeholder.com/400x250" alt="Project 2" />
+						<div class="project-content">
+							<h3>Project Two</h3>
+							<p>Mobile-first responsive design with advanced features.</p>
+						</div>
+					</div>
+					<div class="project-card fade-up">
+						<img src="https://via.placeholder.com/400x250" alt="Project 3" />
+						<div class="project-content">
+							<h3>Project Three</h3>
+							<p>API development and database optimization project.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
 
-        <!-- Resume Section -->
-        <section id="resume">
-            <div class="container">
-                <h2 class="section-title">Resumé</h2>
-                <div class="resume-container" id="resumeContainer">
-                    <!-- Resume items will be inserted here -->
-                </div>
-            </div>
-        </section>
-        
-        <div class="copyright">
-            <script>
-                today = new Date();
-                y0 = today.getFullYear();
-                document.write('© 2004-' + y0);
-            </script>
-        </div>
-    </div>
+		<!-- Resume Section -->
+		<section id="resume">
+			<div class="container">
+				<h2 class="section-title">Resumé</h2>
+				<div class="resume-container" id="resumeContainer">
+					<div class="resume-item">
+						<div class="resume-title">
+							<span class="resume-position">Senior Software Engineer</span>
+							<span class="resume-company">Tech Company Inc.</span>
+						</div>
+						<div class="resume-date">2020 - Present</div>
+						<ul class="resume-list">
+							<li>Led development of scalable web applications</li>
+							<li>Implemented modern JavaScript frameworks and tools</li>
+							<li>Mentored junior developers and conducted code reviews</li>
+						</ul>
+					</div>
+					<div class="resume-item">
+						<div class="resume-title">
+							<span class="resume-position">Full Stack Developer</span>
+							<span class="resume-company">Previous Company LLC</span>
+						</div>
+						<div class="resume-date">2018 - 2020</div>
+						<ul class="resume-list">
+							<li>Developed and maintained multiple client projects</li>
+							<li>Worked with diverse technology stacks</li>
+							<li>Collaborated with design and product teams</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</section>
 
-    <script>
-        async function loadResumeData() {
-            try {
-                const response = await fetch('data/data.json');
-                const data = await response.json();
-                return data;
-            } catch (error) {
-                console.error('Error loading resume data:', error);
-                return null;
-            }
-        }
+		<div class="copyright">
+			<script>
+				today = new Date();
+				y0 = today.getFullYear();
+				document.write('© 2004-' + y0);
+			</script>
+		</div>
+	</div>
 
-        function createContactLinks(contacts) {
-            return contacts.map(contact => `
+	<script>
+		async function loadResumeData() {
+			// Mock data for demonstration - replace with your actual data loading
+			return {
+				basics: {
+					name: "Michael Jereme Hancock",
+					headline: "Senior Software Engineer & Full Stack Developer",
+					image: "https://via.placeholder.com/200",
+					contacts: [
+						{ icon: "fas fa-envelope", value: "michael@jeremehancock.com", url: "mailto:michael@jeremehancock.com" },
+						{ icon: "fab fa-linkedin", value: "LinkedIn", url: "https://linkedin.com/in/jeremehancock" },
+						{ icon: "fab fa-github", value: "GitHub", url: "https://github.com/jeremehancock" }
+					]
+				},
+				projects: [
+					{ name: "Project One", description: "A full-stack web application", image: "https://via.placeholder.com/400x250", url: "#" },
+					{ name: "Project Two", description: "Mobile-first responsive design", image: "https://via.placeholder.com/400x250", url: "#" },
+					{ name: "Project Three", description: "API development project", image: "https://via.placeholder.com/400x250", url: "#" }
+				],
+				resume: [
+					{
+						position: "Senior Software Engineer",
+						company: "Tech Company Inc.",
+						startDate: "2020",
+						endDate: "Present",
+						highlights: ["Led development of scalable web applications", "Implemented modern JavaScript frameworks", "Mentored junior developers"]
+					}
+				]
+			};
+		}
+
+		function createContactLinks(contacts) {
+			return contacts.map(contact => `
                 <a href="${contact.url}" class="contact-link" target="_blank">
                     <i class="${contact.icon}"></i>
                     <span>${contact.value}</span>
                 </a>
             `).join('');
-        }
+		}
 
-        function createProjectCard(project) {
-            return `
+		function createProjectCard(project) {
+			return `
                 <div class="project-card fade-up" onclick="window.open('${project.url}', '_blank')">
                     <img src="${project.image}" alt="${project.name}"/>
                     <div class="project-content">
@@ -529,10 +648,10 @@
                     </div>
                 </div>
             `;
-        }
+		}
 
 		function createResumeItem(item) {
-			var highlights = item.highlights.map(function(highlight) {
+			var highlights = item.highlights.map(function (highlight) {
 				return '<li>' + highlight + '</li>';
 			}).join('');
 
@@ -543,7 +662,7 @@
 			} else {
 				titleHtml += '<span class="resume-position">' + item.position + '</span>';
 				if (item.company) {
-				    titleHtml += '<span class="resume-company">' + item.company + '</span>';
+					titleHtml += '<span class="resume-company">' + item.company + '</span>';
 				}
 			}
 			titleHtml += '</div>';
@@ -567,98 +686,116 @@
 			return html;
 		}
 
-        async function initializePage() {
-            const data = await loadResumeData();
-            
-            if (!data) {
-                document.querySelector('.loading-text').textContent = 'Error loading data';
-                return;
-            }
+		async function initializePage() {
+			const data = await loadResumeData();
 
-            // Set basic information
-            document.getElementById('name').textContent = data.basics.name;
-            document.getElementById('headline').textContent = data.basics.headline;
-            document.getElementById('profileImg').src = data.basics.image;
+			if (!data) {
+				document.querySelector('.loading-text').textContent = 'Error loading data';
+				return;
+			}
 
-            // Render contact links
-            const contactLinks = document.getElementById('contactLinks');
-            contactLinks.innerHTML = createContactLinks(data.basics.contacts);
+			// Set basic information
+			document.getElementById('name').textContent = data.basics.name;
+			document.getElementById('headline').textContent = data.basics.headline;
+			document.getElementById('profileImg').src = data.basics.image;
 
-            // Render projects
-            const projectsGrid = document.getElementById('projectsGrid');
-            projectsGrid.innerHTML = data.projects.map(createProjectCard).join('');
+			// Render contact links
+			const contactLinks = document.getElementById('contactLinks');
+			contactLinks.innerHTML = createContactLinks(data.basics.contacts);
 
-            // Render resume items
-            const resumeContainer = document.getElementById('resumeContainer');
-            resumeContainer.innerHTML = data.resume.map(createResumeItem).join('');
+			// Render projects
+			const projectsGrid = document.getElementById('projectsGrid');
+			projectsGrid.innerHTML = data.projects.map(createProjectCard).join('');
 
-            // Hide loading screen and show content
-            document.querySelector('.loading').style.display = 'none';
-            document.getElementById('content').classList.remove('hidden');
+			// Render resume items
+			const resumeContainer = document.getElementById('resumeContainer');
+			resumeContainer.innerHTML = data.resume.map(createResumeItem).join('');
 
-            // Initialize intersection observer for animations
-            const observerOptions = {
-                root: null,
-                rootMargin: '0px',
-                threshold: 0.1
-            };
+			// Hide loading screen and show content
+			document.querySelector('.loading').style.display = 'none';
+			document.getElementById('content').classList.remove('hidden');
 
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                    }
-                });
-            }, observerOptions);
+			// Force a reflow to ensure proper layout calculation
+			document.body.offsetHeight;
 
-            // Observe all fade-up elements and resume items
-            document.querySelectorAll('.fade-up, .resume-item').forEach((el) => {
-                observer.observe(el);
-            });
-        }
+			// Initialize intersection observer for animations with delay
+			setTimeout(() => {
+				const observerOptions = {
+					root: null,
+					rootMargin: '0px',
+					threshold: 0.1
+				};
 
-        // Initialize the page when DOM is loaded
-        document.addEventListener('DOMContentLoaded', () => {
-            initializePage();
+				const observer = new IntersectionObserver((entries) => {
+					entries.forEach(entry => {
+						if (entry.isIntersecting) {
+							entry.target.classList.add('visible');
+						}
+					});
+				}, observerOptions);
 
-            // Mobile menu functionality
-            const menuButton = document.querySelector('.menu-button');
-            const navLinks = document.querySelector('.nav-links');
-            
-            menuButton.addEventListener('click', () => {
-                navLinks.classList.toggle('active');
-                const icon = menuButton.querySelector('i');
-                icon.classList.toggle('fa-bars');
-                icon.classList.toggle('fa-times');
-            });
+				// Observe all fade-up elements and resume items
+				document.querySelectorAll('.fade-up, .resume-item').forEach((el) => {
+					observer.observe(el);
+				});
+			}, 100);
+		}
 
-            // Close menu when clicking a link
-            document.querySelectorAll('.nav-links a').forEach(link => {
-                link.addEventListener('click', () => {
-                    if (window.innerWidth <= 768) {
-                        navLinks.classList.remove('active');
-                        const icon = menuButton.querySelector('i');
-                        icon.classList.add('fa-bars');
-                        icon.classList.remove('fa-times');
-                    }
-                });
-            });
+		// Initialize the page when DOM is loaded
+		document.addEventListener('DOMContentLoaded', () => {
+			initializePage();
 
-            // Close menu when clicking outside
-            document.addEventListener('click', (e) => {
-                if (window.innerWidth <= 768 && 
-                    !e.target.closest('.nav-links') && 
-                    !e.target.closest('.menu-button') && 
-                    navLinks.classList.contains('active')) {
-                    navLinks.classList.remove('active');
-                    const icon = menuButton.querySelector('i');
-                    icon.classList.add('fa-bars');
-                    icon.classList.remove('fa-times');
-                }
-            });
-        });
-    </script>
-    
+			// Mobile menu functionality
+			const menuButton = document.querySelector('.menu-button');
+			const navLinks = document.querySelector('.nav-links');
+
+			menuButton.addEventListener('click', () => {
+				navLinks.classList.toggle('active');
+				const icon = menuButton.querySelector('i');
+				icon.classList.toggle('fa-bars');
+				icon.classList.toggle('fa-times');
+			});
+
+			// Close menu when clicking a link
+			document.querySelectorAll('.nav-links a').forEach(link => {
+				link.addEventListener('click', () => {
+					if (window.innerWidth <= 768) {
+						navLinks.classList.remove('active');
+						const icon = menuButton.querySelector('i');
+						icon.classList.add('fa-bars');
+						icon.classList.remove('fa-times');
+					}
+				});
+			});
+
+			// Close menu when clicking outside
+			document.addEventListener('click', (e) => {
+				if (window.innerWidth <= 768 &&
+					!e.target.closest('.nav-links') &&
+					!e.target.closest('.menu-button') &&
+					navLinks.classList.contains('active')) {
+					navLinks.classList.remove('active');
+					const icon = menuButton.querySelector('i');
+					icon.classList.add('fa-bars');
+					icon.classList.remove('fa-times');
+				}
+			});
+		});
+
+		// Additional mobile fixes
+		window.addEventListener('orientationchange', () => {
+			// Force layout recalculation on orientation change
+			setTimeout(() => {
+				document.body.offsetHeight;
+			}, 100);
+		});
+
+		window.addEventListener('resize', () => {
+			// Force layout recalculation on resize
+			document.body.offsetHeight;
+		});
+	</script>
+
 	<!-- Start of StatCounter Code -->
 	<script>
 		var sc_project = 2905188;
@@ -669,11 +806,12 @@
 	<script src="//www.statcounter.com/counter/counter.js"></script>
 	<noscript>
 		<div class="statcounter">
-		    <a title="tumblr tracker" href="//www.statcounter.com/tumblr/" target="_blank">
-		        <img class="statcounter" src="//c.statcounter.com/2905188/0/5bd24ec6/1/" alt="tumblr tracker"/>
-		    </a>
+			<a title="tumblr tracker" href="//www.statcounter.com/tumblr/" target="_blank">
+				<img class="statcounter" src="//c.statcounter.com/2905188/0/5bd24ec6/1/" alt="tumblr tracker" />
+			</a>
 		</div>
 	</noscript>
 	<!-- End of StatCounter Code -->
 </body>
+
 </html>
