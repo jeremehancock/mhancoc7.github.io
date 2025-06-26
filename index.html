@@ -4,7 +4,7 @@
 <head>
 	<title>Michael Jereme Hancock - Resumé</title>
 	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 	<meta name="description" content="The Resumé of Michael Jereme Hancock." />
 
 	<meta property="og:title" content="Michael Jereme Hancock - Resumé" />
@@ -41,6 +41,10 @@
 			--border-glass: 1px solid rgba(255, 255, 255, 0.18);
 			--font-primary: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 			--font-mono: 'JetBrains Mono', monospace;
+
+			/* Dynamic viewport height for mobile */
+			--vh: 1vh;
+			--mobile-vh: 1vh;
 		}
 
 		* {
@@ -52,9 +56,10 @@
 		html {
 			scroll-behavior: smooth;
 			scroll-padding-top: 100px;
-			/* Prevent any initial scroll offset issues */
 			overflow-x: hidden;
 			height: 100%;
+			/* Prevent initial scroll issues */
+			overscroll-behavior: none;
 		}
 
 		body {
@@ -68,9 +73,12 @@
 			position: relative;
 			margin: 0;
 			padding: 0;
-			min-height: 100%;
-			/* Prevent initial layout shift */
+			/* Use dynamic height calculation */
+			min-height: calc(var(--mobile-vh, 1vh) * 100);
 			width: 100%;
+			/* Prevent address bar issues */
+			-webkit-overflow-scrolling: touch;
+			overscroll-behavior: none;
 		}
 
 		/* Animated Background */
@@ -79,7 +87,7 @@
 			top: 0;
 			left: 0;
 			width: 100%;
-			height: 100%;
+			height: calc(var(--mobile-vh, 1vh) * 100);
 			z-index: -1;
 			background: radial-gradient(ellipse at top, #1e3c72 0%, #0a0a0a 70%);
 		}
@@ -107,19 +115,22 @@
 			}
 		}
 
-		/* Loading Screen */
+		/* Loading Screen - Fixed for mobile */
 		.loading {
 			position: fixed;
 			top: 0;
 			left: 0;
 			width: 100%;
-			height: 100%;
+			height: calc(var(--mobile-vh, 1vh) * 100);
 			background: var(--bg-primary);
 			display: flex;
 			justify-content: center;
 			align-items: center;
 			z-index: 9999;
 			overflow: hidden;
+			/* Ensure it covers the entire viewport */
+			margin: 0;
+			padding: 0;
 		}
 
 		.loading-content {
@@ -260,22 +271,23 @@
 			padding: 0 2rem;
 		}
 
-		/* Section Styling */
+		/* Section Styling - Fixed for mobile */
 		section {
-			min-height: 100vh;
+			min-height: calc(var(--mobile-vh, 1vh) * 100);
 			display: flex;
 			align-items: center;
 			padding: 6rem 0;
 			position: relative;
 		}
 
-		/* Hero Section */
+		/* Hero Section - Fixed for mobile */
 		.hero {
 			position: relative;
 			background: var(--gradient-bg);
 			overflow: hidden;
 			padding-top: 80px;
-			/* Space for fixed navbar */
+			/* Ensure proper height on mobile */
+			min-height: calc(var(--mobile-vh, 1vh) * 100);
 		}
 
 		.hero::before {
@@ -807,7 +819,7 @@
 				background: rgba(10, 10, 10, 0.95);
 				backdrop-filter: blur(20px);
 				width: 280px;
-				height: calc(100vh - 80px);
+				height: calc(var(--mobile-vh, 1vh) * 100 - 80px);
 				padding: 2rem 0;
 				transition: right 0.3s ease;
 				border-left: var(--border-glass);
@@ -873,13 +885,24 @@
 				font-size: 0.9rem;
 			}
 		}
+
+		/* iOS Safari specific fixes */
+		@supports (-webkit-appearance: none) {
+
+			.loading,
+			.hero,
+			.animated-bg,
+			section {
+				min-height: -webkit-fill-available;
+			}
+		}
 	</style>
 </head>
 
 <body>
 	<div class="animated-bg"></div>
 
-	<div class="loading" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999;">
+	<div class="loading">
 		<div class="loading-content">
 			<div class="loading-spinner"></div>
 			<div class="loading-text">Loading</div>
@@ -954,10 +977,32 @@
 	</div>
 
 	<script>
-		// Immediate scroll to top before any other scripts run
-		window.scrollTo(0, 0);
-		document.documentElement.scrollTop = 0;
-		document.body.scrollTop = 0;
+		// Mobile viewport height calculation
+		function setMobileVH() {
+			const vh = window.innerHeight * 0.01;
+			document.documentElement.style.setProperty('--mobile-vh', `${vh}px`);
+		}
+
+		// Set initial mobile viewport height
+		setMobileVH();
+
+		// Prevent scroll restoration and force scroll to top
+		function forceScrollToTop() {
+			if ('scrollRestoration' in history) {
+				history.scrollRestoration = 'manual';
+			}
+
+			// Multiple methods to ensure scroll to top
+			window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+			document.documentElement.scrollTop = 0;
+			document.body.scrollTop = 0;
+
+			// Force layout recalculation
+			document.body.offsetHeight;
+		}
+
+		// Initial scroll to top
+		forceScrollToTop();
 
 		// Particle animation
 		function createParticles() {
@@ -1099,26 +1144,25 @@
 
 			// Hide loading screen and show content
 			setTimeout(() => {
-				// Multiple attempts to ensure proper positioning
-				window.scrollTo(0, 0);
+				// Force scroll to top one more time
+				forceScrollToTop();
 
-				document.querySelector('.loading').style.display = 'none';
-				document.getElementById('content').classList.remove('hidden');
+				// Hide loading screen
+				const loadingScreen = document.querySelector('.loading');
+				loadingScreen.style.opacity = '0';
+				loadingScreen.style.transition = 'opacity 0.3s ease';
 
-				// Force layout recalculation and scroll to top
-				requestAnimationFrame(() => {
-					window.scrollTo(0, 0);
-					document.body.scrollTop = 0;
-					document.documentElement.scrollTop = 0;
-				});
-
-				// Final safety net after a short delay
 				setTimeout(() => {
-					window.scrollTo(0, 0);
-				}, 100);
+					loadingScreen.style.display = 'none';
+					document.getElementById('content').classList.remove('hidden');
 
-				// Initialize intersection observer for animations
-				initializeAnimations();
+					// Final scroll to top
+					requestAnimationFrame(() => {
+						forceScrollToTop();
+						// Initialize animations after content is shown
+						initializeAnimations();
+					});
+				}, 300);
 			}, 1200);
 		}
 
@@ -1145,25 +1189,36 @@
 
 		// Initialize the page when DOM is loaded
 		document.addEventListener('DOMContentLoaded', () => {
-			// Prevent browser scroll restoration
-			if ('scrollRestoration' in history) {
-				history.scrollRestoration = 'manual';
-			}
+			// Force initial scroll to top
+			forceScrollToTop();
 
-			// Force immediate scroll to top
-			window.scrollTo(0, 0);
-			document.body.scrollTop = 0;
-			document.documentElement.scrollTop = 0;
+			// Set initial mobile viewport height
+			setMobileVH();
 
-			// Wait for browser to finish layout calculations
-			setTimeout(() => {
-				window.scrollTo(0, 0);
-			}, 50);
-
+			// Initialize page
 			initializePage();
 
 			// Navbar scroll effect
 			window.addEventListener('scroll', handleNavbarScroll);
+
+			// Handle mobile viewport changes
+			window.addEventListener('resize', () => {
+				setMobileVH();
+				// Prevent unwanted scrolling on resize
+				if (window.scrollY < 100) {
+					forceScrollToTop();
+				}
+			});
+
+			// Handle orientation change
+			window.addEventListener('orientationchange', () => {
+				setTimeout(() => {
+					setMobileVH();
+					if (window.scrollY < 100) {
+						forceScrollToTop();
+					}
+				}, 300);
+			});
 
 			// Mobile menu functionality
 			const menuButton = document.querySelector('.menu-button');
@@ -1214,31 +1269,21 @@
 					}
 				});
 			});
+		});
 
-			// Handle viewport changes (mobile address bar, etc.)
-			let resizeTimer;
-			window.addEventListener('resize', () => {
-				clearTimeout(resizeTimer);
-				resizeTimer = setTimeout(() => {
-					if (window.scrollY < 100) {
-						window.scrollTo(0, 0);
-					}
-				}, 100);
-			});
+		// Handle page load
+		window.addEventListener('load', () => {
+			// Final scroll to top after everything is loaded
+			setTimeout(() => {
+				forceScrollToTop();
+			}, 100);
+		});
 
-			// Additional safety net for mobile browsers
-			window.addEventListener('load', () => {
-				setTimeout(() => {
-					window.scrollTo(0, 0);
-				}, 200);
-			});
-
-			// Handle orientation change on mobile
-			window.addEventListener('orientationchange', () => {
-				setTimeout(() => {
-					window.scrollTo(0, 0);
-				}, 500);
-			});
+		// Prevent back/forward cache issues
+		window.addEventListener('pageshow', (event) => {
+			if (event.persisted) {
+				forceScrollToTop();
+			}
 		});
 	</script>
 
