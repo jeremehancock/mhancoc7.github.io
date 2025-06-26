@@ -961,6 +961,7 @@
 	<script>
 		// Navigation state variables
 		let scrollTimeout = null;
+		let isScrollingToTarget = false;
 
 		// Mobile viewport height calculation
 		function setMobileVH() {
@@ -968,48 +969,21 @@
 			document.documentElement.style.setProperty('--mobile-vh', `${vh}px`);
 		}
 
-		// Get all sections and nav links
-		function getNavigationElements() {
-			const sections = ['contact', 'projects', 'resume'];
-			const navLinks = document.querySelectorAll('.nav-links a');
-			return { sections, navLinks };
-		}
-
 		// Set active navigation link (single source of truth)
 		function setActiveNavLink(activeSection) {
-			// Clear ALL active states IMMEDIATELY - no async
+			// Clear ALL active states first
 			const allNavLinks = document.querySelectorAll('.nav-links a');
 			allNavLinks.forEach(link => {
 				link.classList.remove('active');
 			});
 
-			// Also query by class to catch any lingering ones
-			const anyActiveLinks = document.querySelectorAll('.nav-links a.active');
-			anyActiveLinks.forEach(link => {
-				link.classList.remove('active');
-			});
-
-			// Force a layout to ensure the removals are processed
-			document.body.offsetHeight;
-
-			// Now set exactly one active link
+			// Set exactly one active link
 			const activeLink = document.querySelector(`.nav-links a[href="#${activeSection}"]`);
 			if (activeLink) {
 				activeLink.classList.add('active');
 			}
 
-			// Double-check: ensure only one link is active
-			const activeLinks = document.querySelectorAll('.nav-links a.active');
-			if (activeLinks.length > 1) {
-				console.warn(`Multiple active links detected! Count: ${activeLinks.length}`);
-				// Force clear all and set only the correct one
-				activeLinks.forEach(link => link.classList.remove('active'));
-				if (activeLink) {
-					activeLink.classList.add('active');
-				}
-			}
-
-			console.log(`Active section set to: ${activeSection}, active links count: ${document.querySelectorAll('.nav-links a.active').length}`);
+			console.log(`Active section set to: ${activeSection}`);
 		}
 
 		// Determine which section should be active based on scroll position
@@ -1019,17 +993,16 @@
 			const windowHeight = window.innerHeight;
 			const documentHeight = document.documentElement.scrollHeight;
 			const navbarHeight = 60;
-			const offset = navbarHeight + 100; // Offset for when to switch sections
 
-			console.log(`Scroll position: ${scrollPosition}`);
+			// More responsive offset - smaller for better responsiveness
+			const offset = navbarHeight + 50;
 
 			// If we're near the bottom of the page, always show the last section
 			if (scrollPosition + windowHeight >= documentHeight - 50) {
-				console.log('Near bottom, returning resume');
 				return 'resume';
 			}
 
-			// Simple approach: find which section we've scrolled past
+			// Find which section we're currently viewing
 			let activeSection = 'contact'; // default
 
 			for (let i = sections.length - 1; i >= 0; i--) {
@@ -1038,12 +1011,13 @@
 
 				if (section) {
 					const sectionTop = section.offsetTop;
-					console.log(`Section ${sectionId} top: ${sectionTop}, scroll + offset: ${scrollPosition + offset}`);
+					const sectionHeight = section.offsetHeight;
+					const sectionBottom = sectionTop + sectionHeight;
 
-					// If we've scrolled past this section's top (minus offset), this is the active section
+					// Check if we're within this section's boundaries
+					// A section is active if we've scrolled past its top by at least the offset
 					if (scrollPosition + offset >= sectionTop) {
 						activeSection = sectionId;
-						console.log(`Active section determined: ${activeSection}`);
 						break;
 					}
 				}
@@ -1052,10 +1026,8 @@
 			return activeSection;
 		}
 
-		// Handle scroll events
+		// Handle scroll events - MUCH more responsive
 		function handleScroll() {
-			console.log('Scroll event fired');
-
 			// Clear any existing timeout
 			if (scrollTimeout) {
 				clearTimeout(scrollTimeout);
@@ -1066,12 +1038,11 @@
 			const scrolled = window.pageYOffset > 50;
 			navbar.classList.toggle('scrolled', scrolled);
 
-			// Always update active section - no blocking whatsoever
+			// Update active section with much shorter delay for better responsiveness
 			scrollTimeout = setTimeout(() => {
-				console.log('Updating active section from scroll');
 				const activeSection = getActiveSection();
 				setActiveNavLink(activeSection);
-			}, 50);
+			}, 10); // Reduced from 50ms to 10ms for much better responsiveness
 		}
 
 		// Handle smooth scrolling to sections
@@ -1079,16 +1050,14 @@
 			const targetElement = document.getElementById(targetId);
 			if (!targetElement) return;
 
-			console.log(`Clicking link to scroll to: ${targetId}`);
+			console.log(`Scrolling to section: ${targetId}`);
 
-			// Immediately set the clicked link as active
-			setActiveNavLink(targetId);
+			// Set flag to indicate we're programmatically scrolling
+			isScrollingToTarget = true;
 
 			// Calculate scroll position
 			const navbarHeight = document.querySelector('.navbar').offsetHeight;
 			const targetPosition = targetElement.offsetTop - navbarHeight - 20;
-
-			console.log(`Scrolling to position: ${targetPosition}`);
 
 			// Perform smooth scroll
 			window.scrollTo({
@@ -1096,7 +1065,10 @@
 				behavior: 'smooth'
 			});
 
-			// No blocking - let scroll spy take over immediately
+			// Clear the flag after a reasonable time (smooth scroll should be done)
+			setTimeout(() => {
+				isScrollingToTarget = false;
+			}, 1000);
 		}
 
 		// Initialize navigation system
@@ -1110,7 +1082,7 @@
 				});
 			});
 
-			// Set up scroll event listener
+			// Set up scroll event listener with passive for better performance
 			window.addEventListener('scroll', handleScroll, { passive: true });
 
 			// Set initial active state
