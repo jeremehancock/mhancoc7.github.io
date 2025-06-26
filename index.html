@@ -963,9 +963,6 @@
 		let scrollTimeout = null;
 		let lastActiveSection = null;
 		let clickTimeout = null;
-		let recentlyClicked = false;
-		let lastScrollPosition = 0;
-		let touchStartY = 0;
 
 		// Mobile viewport height calculation
 		function setMobileVH() {
@@ -1068,23 +1065,6 @@
 
 		// Handle scroll events
 		function handleScroll() {
-			const currentScrollPosition = window.pageYOffset;
-
-			// If we detect manual scrolling while recently clicked, clear the click state
-			if (recentlyClicked) {
-				const scrollMovement = Math.abs(currentScrollPosition - lastScrollPosition);
-				if (scrollMovement > 10) {
-					// User is manually scrolling, clear the click state immediately
-					recentlyClicked = false;
-					if (clickTimeout) {
-						clearTimeout(clickTimeout);
-						clickTimeout = null;
-					}
-				}
-			}
-
-			lastScrollPosition = currentScrollPosition;
-
 			// Clear any existing timeout
 			if (scrollTimeout) {
 				clearTimeout(scrollTimeout);
@@ -1092,16 +1072,14 @@
 
 			// Update navbar scroll effect immediately
 			const navbar = document.querySelector('.navbar');
-			const scrolled = currentScrollPosition > 50;
+			const scrolled = window.pageYOffset > 50;
 			navbar.classList.toggle('scrolled', scrolled);
 
-			// Update active section if not recently clicked, or if manual scrolling detected
-			if (!recentlyClicked) {
-				scrollTimeout = setTimeout(() => {
-					const activeSection = getActiveSection();
-					setActiveNavLink(activeSection);
-				}, 50);
-			}
+			// Always update active section based on scroll position with a small debounce
+			scrollTimeout = setTimeout(() => {
+				const activeSection = getActiveSection();
+				setActiveNavLink(activeSection);
+			}, 50);
 		}
 
 		// Handle smooth scrolling to sections
@@ -1113,12 +1091,6 @@
 			if (clickTimeout) {
 				clearTimeout(clickTimeout);
 			}
-
-			// Store current scroll position
-			lastScrollPosition = window.pageYOffset;
-
-			// Set flag to prevent scroll spy interference during initial scroll
-			recentlyClicked = true;
 
 			// Immediately set the clicked link as active (this will clear all others)
 			setActiveNavLink(targetId);
@@ -1133,13 +1105,12 @@
 				behavior: 'smooth'
 			});
 
-			// Allow scroll spy to resume after a shorter delay
+			// After a very brief delay, let scroll spy take over completely
+			// This ensures the active link always reflects the actual visible section
 			clickTimeout = setTimeout(() => {
-				recentlyClicked = false;
-				// Now let scroll spy take over based on actual position
 				const activeSection = getActiveSection();
 				setActiveNavLink(activeSection);
-			}, 200); // Reduced from 300ms
+			}, 150);
 		}
 
 		// Initialize navigation system
@@ -1156,33 +1127,7 @@
 			// Set up scroll event listener
 			window.addEventListener('scroll', handleScroll, { passive: true });
 
-			// Set up touch event listeners for mobile scroll detection
-			document.addEventListener('touchstart', function (e) {
-				touchStartY = e.touches[0].clientY;
-			}, { passive: true });
-
-			document.addEventListener('touchmove', function (e) {
-				if (recentlyClicked) {
-					const touchCurrentY = e.touches[0].clientY;
-					const touchMovement = Math.abs(touchCurrentY - touchStartY);
-
-					// If user moves finger significantly, they're manually scrolling
-					if (touchMovement > 20) {
-						recentlyClicked = false;
-						if (clickTimeout) {
-							clearTimeout(clickTimeout);
-							clickTimeout = null;
-						}
-						// Immediately update active section
-						setTimeout(() => {
-							const activeSection = getActiveSection();
-							setActiveNavLink(activeSection);
-						}, 50);
-					}
-				}
-			}, { passive: true });
-
-			// Set initial active state - force contact to be active since we're at the top
+			// Set initial active state
 			setTimeout(() => {
 				setActiveNavLink('contact');
 			}, 100);
@@ -1208,11 +1153,8 @@
 			document.documentElement.scrollTop = 0;
 			document.body.scrollTop = 0;
 
-			// Reset all navigation state
+			// Reset navigation state
 			lastActiveSection = null;
-			recentlyClicked = false;
-			lastScrollPosition = 0;
-			touchStartY = 0;
 
 			// Force layout recalculation
 			document.body.offsetHeight;
