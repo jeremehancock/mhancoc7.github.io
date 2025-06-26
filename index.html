@@ -960,12 +960,9 @@
 
 	<script>
 		// Navigation state variables
-		let isScrollingProgrammatically = false;
 		let scrollTimeout = null;
 		let lastActiveSection = null;
-		let programmaticScrollTimeout = null;
-		let lastScrollY = 0;
-		let scrollDirection = 'down';
+		let clickTimeout = null;
 
 		// Mobile viewport height calculation
 		function setMobileVH() {
@@ -1060,24 +1057,6 @@
 
 		// Handle scroll events
 		function handleScroll() {
-			// Detect scroll direction and movement
-			const currentScrollY = window.pageYOffset;
-			const scrollMovement = Math.abs(currentScrollY - lastScrollY);
-			scrollDirection = currentScrollY > lastScrollY ? 'down' : 'up';
-
-			// If we detect ANY scroll movement while in programmatic mode,
-			// assume user has taken control and clear programmatic state immediately
-			if (isScrollingProgrammatically && scrollMovement > 5) {
-				// Clear any pending programmatic scroll timeout
-				if (programmaticScrollTimeout) {
-					clearTimeout(programmaticScrollTimeout);
-					programmaticScrollTimeout = null;
-				}
-				isScrollingProgrammatically = false;
-			}
-
-			lastScrollY = currentScrollY;
-
 			// Clear any existing timeout
 			if (scrollTimeout) {
 				clearTimeout(scrollTimeout);
@@ -1085,17 +1064,14 @@
 
 			// Update navbar scroll effect immediately
 			const navbar = document.querySelector('.navbar');
-			const scrolled = currentScrollY > 50;
+			const scrolled = window.pageYOffset > 50;
 			navbar.classList.toggle('scrolled', scrolled);
 
-			// Always update active section when not in programmatic scroll mode
-			if (!isScrollingProgrammatically) {
-				// Debounce the active section update
-				scrollTimeout = setTimeout(() => {
-					const activeSection = getActiveSection();
-					setActiveNavLink(activeSection);
-				}, 30); // Reduced delay for more responsive updates
-			}
+			// Always update active section with a small debounce
+			scrollTimeout = setTimeout(() => {
+				const activeSection = getActiveSection();
+				setActiveNavLink(activeSection);
+			}, 100);
 		}
 
 		// Handle smooth scrolling to sections
@@ -1103,14 +1079,10 @@
 			const targetElement = document.getElementById(targetId);
 			if (!targetElement) return;
 
-			// Clear any existing programmatic scroll timeout
-			if (programmaticScrollTimeout) {
-				clearTimeout(programmaticScrollTimeout);
-				programmaticScrollTimeout = null;
+			// Clear any existing timeout
+			if (clickTimeout) {
+				clearTimeout(clickTimeout);
 			}
-
-			// Set flag to prevent scroll spy from interfering initially
-			isScrollingProgrammatically = true;
 
 			// Immediately set the clicked link as active
 			setActiveNavLink(targetId);
@@ -1125,11 +1097,13 @@
 				behavior: 'smooth'
 			});
 
-			// Set a very short timeout to allow the scroll to start,
-			// then let manual scroll detection take over
-			programmaticScrollTimeout = setTimeout(() => {
-				isScrollingProgrammatically = false;
-			}, 500); // Much shorter timeout - manual detection will take over if user scrolls
+			// After scroll animation has had time to start (very brief),
+			// let the scroll spy take over and update based on actual position
+			clickTimeout = setTimeout(() => {
+				// Force an immediate update based on current scroll position
+				const activeSection = getActiveSection();
+				setActiveNavLink(activeSection);
+			}, 100);
 		}
 
 		// Initialize navigation system
@@ -1163,20 +1137,17 @@
 				clearTimeout(scrollTimeout);
 				scrollTimeout = null;
 			}
-			if (programmaticScrollTimeout) {
-				clearTimeout(programmaticScrollTimeout);
-				programmaticScrollTimeout = null;
+			if (clickTimeout) {
+				clearTimeout(clickTimeout);
+				clickTimeout = null;
 			}
 
 			window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
 			document.documentElement.scrollTop = 0;
 			document.body.scrollTop = 0;
 
-			// Reset all navigation state
-			isScrollingProgrammatically = false;
+			// Reset navigation state
 			lastActiveSection = null;
-			lastScrollY = 0;
-			scrollDirection = 'down';
 
 			// Force layout recalculation
 			document.body.offsetHeight;
