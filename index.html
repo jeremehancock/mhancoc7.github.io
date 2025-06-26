@@ -29,6 +29,7 @@
 			--accent-hover: #0369a1;
 			--card-bg: #171717;
 			--font-sans: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+			--navbar-height: 60px;
 		}
 
 		* {
@@ -39,8 +40,10 @@
 
 		html {
 			scroll-behavior: smooth;
-			scroll-padding-top: 80px;
+			scroll-padding-top: var(--navbar-height);
 			background-color: var(--bg-color);
+			/* Fix for mobile viewport issues */
+			height: 100%;
 		}
 
 		body {
@@ -48,8 +51,9 @@
 			color: var(--text-color);
 			line-height: 1.6;
 			-webkit-font-smoothing: antialiased;
-			padding-top: 60px;
 			font-size: 1.1rem;
+			/* Remove fixed padding-top */
+			min-height: 100%;
 		}
 
 		.container {
@@ -59,11 +63,12 @@
 		}
 
 		section {
-			min-height: 100vh;
+			/* Use min-height instead of fixed 100vh to avoid mobile viewport issues */
+			min-height: calc(100vh - var(--navbar-height));
 			display: flex;
 			align-items: center;
 			position: relative;
-			padding: 6rem 0;
+			padding: 2rem 0;
 		}
 
 		.loading {
@@ -115,7 +120,7 @@
 			top: 0;
 			left: 0;
 			right: 0;
-			height: 60px;
+			height: var(--navbar-height);
 			background: rgba(10, 10, 10, 0.95);
 			backdrop-filter: blur(10px);
 			z-index: 1000;
@@ -166,7 +171,10 @@
 		.hero {
 			position: relative;
 			overflow: hidden;
-			margin-top: -50px;
+			/* Add top margin to account for fixed navbar */
+			margin-top: var(--navbar-height);
+			/* Ensure proper minimum height accounting for navbar */
+			min-height: calc(100vh - var(--navbar-height));
 		}
 
 		.hero-content {
@@ -368,6 +376,15 @@
 			margin-right: 20px;
 		}
 
+		/* Mobile-specific fixes */
+		@supports (-webkit-touch-callout: none) {
+
+			/* iOS Safari specific fixes */
+			.hero {
+				min-height: -webkit-fill-available;
+			}
+		}
+
 		/* Responsive Design */
 		@media (max-width: 1024px) {
 			.projects-grid {
@@ -389,14 +406,14 @@
 
 			.nav-links {
 				position: fixed;
-				top: 60px;
+				top: var(--navbar-height);
 				right: -100%;
 				flex-direction: column;
 				gap: 0;
 				background: rgba(10, 10, 10, 0.95);
 				backdrop-filter: blur(10px);
 				width: 200px;
-				height: calc(100vh - 60px);
+				height: calc(100vh - var(--navbar-height));
 				padding: 1rem 0;
 				transition: right 0.3s ease;
 				border-left: 1px solid #262626;
@@ -418,6 +435,14 @@
 
 			section {
 				padding: 1rem 0;
+				/* Reduce minimum height on mobile for better spacing */
+				min-height: auto;
+			}
+
+			.hero {
+				/* Adjust hero section for mobile */
+				min-height: calc(100vh - var(--navbar-height));
+				padding: 2rem 0;
 			}
 
 			.hero-content {
@@ -433,8 +458,7 @@
 			}
 
 			.contact-links {
-				flex-direction: column;
-				align-items: flex-start;
+				justify-content: center;
 				gap: 1rem;
 			}
 
@@ -444,6 +468,15 @@
 
 			.resume-item {
 				padding: 1rem;
+			}
+		}
+
+		/* Additional mobile viewport fix */
+		@media (max-width: 768px) and (orientation: portrait) {
+			.hero {
+				min-height: calc(100vh - var(--navbar-height));
+				/* Use viewport units that account for mobile browser UI */
+				min-height: calc(100svh - var(--navbar-height));
 			}
 		}
 	</style>
@@ -473,12 +506,24 @@
 		<section class="hero" id="contact">
 			<div class="container">
 				<div class="hero-content">
-					<img class="hero-profile-img" id="profileImg" alt="">
+					<img class="hero-profile-img" id="profileImg"
+						src="https://via.placeholder.com/200x200/0284c7/ffffff?text=Profile" alt="Profile">
 					<div class="hero-text">
-						<h1 id="name"></h1>
-						<p id="headline"></p>
+						<h1 id="name">Michael Jereme Hancock</h1>
+						<p id="headline">Full Stack Developer & Tech Enthusiast</p>
 						<div class="contact-links" id="contactLinks">
-							<!-- Contact links will be inserted here -->
+							<a href="mailto:contact@example.com" class="contact-link">
+								<i class="fas fa-envelope"></i>
+								<span>contact@example.com</span>
+							</a>
+							<a href="https://linkedin.com/in/example" class="contact-link" target="_blank">
+								<i class="fab fa-linkedin"></i>
+								<span>LinkedIn</span>
+							</a>
+							<a href="https://github.com/example" class="contact-link" target="_blank">
+								<i class="fab fa-github"></i>
+								<span>GitHub</span>
+							</a>
 						</div>
 					</div>
 				</div>
@@ -490,7 +535,27 @@
 			<div class="container">
 				<h2 class="section-title">Projects</h2>
 				<div class="projects-grid" id="projectsGrid">
-					<!-- Projects will be inserted here -->
+					<div class="project-card fade-up">
+						<img src="https://via.placeholder.com/400x250/0284c7/ffffff?text=Project+1" alt="Project 1" />
+						<div class="project-content">
+							<h3>Project One</h3>
+							<p>A modern web application built with cutting-edge technologies.</p>
+						</div>
+					</div>
+					<div class="project-card fade-up">
+						<img src="https://via.placeholder.com/400x250/0284c7/ffffff?text=Project+2" alt="Project 2" />
+						<div class="project-content">
+							<h3>Project Two</h3>
+							<p>An innovative solution for complex business challenges.</p>
+						</div>
+					</div>
+					<div class="project-card fade-up">
+						<img src="https://via.placeholder.com/400x250/0284c7/ffffff?text=Project+3" alt="Project 3" />
+						<div class="project-content">
+							<h3>Project Three</h3>
+							<p>A collaborative platform that enhances team productivity.</p>
+						</div>
+					</div>
 				</div>
 			</div>
 		</section>
@@ -500,7 +565,30 @@
 			<div class="container">
 				<h2 class="section-title">Resumé</h2>
 				<div class="resume-container" id="resumeContainer">
-					<!-- Resume items will be inserted here -->
+					<div class="resume-item">
+						<div class="resume-title">
+							<span class="resume-position">Senior Full Stack Developer</span>
+							<span class="resume-company">Tech Company Inc.</span>
+						</div>
+						<div class="resume-date">2022 - Present</div>
+						<ul class="resume-list">
+							<li>Led development of scalable web applications serving 100k+ users</li>
+							<li>Implemented modern DevOps practices reducing deployment time by 60%</li>
+							<li>Mentored junior developers and established coding standards</li>
+						</ul>
+					</div>
+					<div class="resume-item">
+						<div class="resume-title">
+							<span class="resume-position">Full Stack Developer</span>
+							<span class="resume-company">StartUp Solutions</span>
+						</div>
+						<div class="resume-date">2020 - 2022</div>
+						<ul class="resume-list">
+							<li>Built responsive web applications using React and Node.js</li>
+							<li>Collaborated with design team to implement pixel-perfect UIs</li>
+							<li>Optimized database queries improving performance by 40%</li>
+						</ul>
+					</div>
 				</div>
 			</div>
 		</section>
@@ -515,15 +603,52 @@
 	</div>
 
 	<script>
+		// Simulate loading data
 		async function loadResumeData() {
-			try {
-				const response = await fetch('data/data.json');
-				const data = await response.json();
-				return data;
-			} catch (error) {
-				console.error('Error loading resume data:', error);
-				return null;
-			}
+			// Simulate API delay
+			await new Promise(resolve => setTimeout(resolve, 1000));
+
+			return {
+				basics: {
+					name: "Michael Jereme Hancock",
+					headline: "Full Stack Developer & Tech Enthusiast",
+					image: "https://via.placeholder.com/200x200/0284c7/ffffff?text=Profile",
+					contacts: [
+						{ icon: "fas fa-envelope", value: "contact@example.com", url: "mailto:contact@example.com" },
+						{ icon: "fab fa-linkedin", value: "LinkedIn", url: "https://linkedin.com/in/example" },
+						{ icon: "fab fa-github", value: "GitHub", url: "https://github.com/example" }
+					]
+				},
+				projects: [
+					{ name: "Project One", description: "A modern web application built with cutting-edge technologies.", image: "https://via.placeholder.com/400x250/0284c7/ffffff?text=Project+1", url: "#" },
+					{ name: "Project Two", description: "An innovative solution for complex business challenges.", image: "https://via.placeholder.com/400x250/0284c7/ffffff?text=Project+2", url: "#" },
+					{ name: "Project Three", description: "A collaborative platform that enhances team productivity.", image: "https://via.placeholder.com/400x250/0284c7/ffffff?text=Project+3", url: "#" }
+				],
+				resume: [
+					{
+						position: "Senior Full Stack Developer",
+						company: "Tech Company Inc.",
+						startDate: "2022",
+						endDate: "Present",
+						highlights: [
+							"Led development of scalable web applications serving 100k+ users",
+							"Implemented modern DevOps practices reducing deployment time by 60%",
+							"Mentored junior developers and established coding standards"
+						]
+					},
+					{
+						position: "Full Stack Developer",
+						company: "StartUp Solutions",
+						startDate: "2020",
+						endDate: "2022",
+						highlights: [
+							"Built responsive web applications using React and Node.js",
+							"Collaborated with design team to implement pixel-perfect UIs",
+							"Optimized database queries improving performance by 40%"
+						]
+					}
+				]
+			};
 		}
 
 		function createContactLinks(contacts) {
@@ -612,38 +737,6 @@
 			document.querySelector('.loading').style.display = 'none';
 			document.getElementById('content').classList.remove('hidden');
 
-			// Comprehensive mobile scroll fix
-			const forceScrollTop = () => {
-				// Multiple scroll methods for maximum compatibility
-				window.scrollTo(0, 0);
-				window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-				document.documentElement.scrollTop = 0;
-				document.body.scrollTop = 0;
-
-				// Force viewport recalculation on mobile
-				if (window.innerWidth <= 768) {
-					window.dispatchEvent(new Event('resize'));
-					// Force a layout recalculation
-					document.body.style.height = '100%';
-					document.body.offsetHeight; // Force reflow
-					document.body.style.height = '';
-				}
-			};
-
-			// Immediate attempts
-			forceScrollTop();
-
-			// Multiple timing attempts for mobile reliability
-			requestAnimationFrame(() => {
-				forceScrollTop();
-			});
-
-			setTimeout(forceScrollTop, 10);
-			setTimeout(forceScrollTop, 50);
-			setTimeout(forceScrollTop, 100);
-			setTimeout(forceScrollTop, 200);
-			setTimeout(forceScrollTop, 500);
-
 			// Initialize intersection observer for animations
 			const observerOptions = {
 				root: null,
@@ -706,23 +799,6 @@
 			});
 		});
 	</script>
-
-	<!-- Start of StatCounter Code -->
-	<script>
-		var sc_project = 2905188;
-		var sc_invisible = 1;
-		var sc_security = "5bd24ec6";
-	</script>
-
-	<script src="//www.statcounter.com/counter/counter.js"></script>
-	<noscript>
-		<div class="statcounter">
-			<a title="tumblr tracker" href="//www.statcounter.com/tumblr/" target="_blank">
-				<img class="statcounter" src="//c.statcounter.com/2905188/0/5bd24ec6/1/" alt="tumblr tracker" />
-			</a>
-		</div>
-	</noscript>
-	<!-- End of StatCounter Code -->
 </body>
 
 </html>
