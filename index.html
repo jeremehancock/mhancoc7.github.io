@@ -1013,6 +1013,8 @@
 		// Scroll spy functionality
 		let lockedActiveLink = null;
 		let lockTimeout = null;
+		let lastScrollY = 0;
+		let userScrolling = false;
 
 		function updateActiveNavLink() {
 			// If we have a locked active link, don't change anything
@@ -1077,7 +1079,18 @@
 			});
 		}
 
+		function clearLock() {
+			if (lockTimeout) {
+				clearTimeout(lockTimeout);
+				lockTimeout = null;
+			}
+			lockedActiveLink = null;
+		}
+
 		function setActiveLink(link) {
+			// Clear any existing lock first
+			clearLock();
+
 			// Atomically clear and set
 			requestAnimationFrame(() => {
 				document.querySelectorAll('.nav-links a').forEach(l => {
@@ -1089,24 +1102,39 @@
 			// Lock this link as active
 			lockedActiveLink = link;
 
-			// Clear any existing timeout
-			if (lockTimeout) {
-				clearTimeout(lockTimeout);
-			}
-
-			// Unlock after delay
+			// Set new timeout
 			const isMobile = window.innerWidth <= 768;
 			const delay = isMobile ? 2500 : 1500;
 
 			lockTimeout = setTimeout(() => {
-				lockedActiveLink = null;
+				clearLock();
 				updateActiveNavLink();
 			}, delay);
+		}
+
+		// Detect manual scrolling vs programmatic scrolling
+		function detectUserScrolling() {
+			const currentScrollY = window.scrollY;
+			if (Math.abs(currentScrollY - lastScrollY) > 5) {
+				userScrolling = true;
+				// If user is manually scrolling, clear any existing locks
+				if (lockedActiveLink) {
+					clearLock();
+					updateActiveNavLink();
+				}
+			}
+			lastScrollY = currentScrollY;
+
+			// Reset user scrolling flag after a delay
+			setTimeout(() => {
+				userScrolling = false;
+			}, 100);
 		}
 
 		// Debounced scroll handler
 		let scrollTimeout;
 		function handleScroll() {
+			detectUserScrolling();
 			clearTimeout(scrollTimeout);
 			scrollTimeout = setTimeout(() => {
 				handleNavbarScroll();
