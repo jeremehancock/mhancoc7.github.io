@@ -246,16 +246,23 @@
 			background: rgba(255, 255, 255, 0.05);
 		}
 
-		.nav-links a:hover::before {
-			width: 80%;
-		}
-
 		/* Aggressive focus state management for mobile */
 		.nav-links a:focus {
 			outline: none;
 		}
 
-		/* Ensure focused but non-active links appear normal */
+		/* Override system - when scrolling-override is active, force normal appearance */
+		.nav-links.scrolling-override a:focus:not(.active) {
+			color: var(--text-secondary) !important;
+			background: transparent !important;
+			transform: none !important;
+		}
+
+		.nav-links.scrolling-override a:focus:not(.active)::before {
+			width: 0 !important;
+		}
+
+		/* Always ensure focused but non-active links appear normal */
 		.nav-links a:focus:not(.active) {
 			color: var(--text-secondary) !important;
 			background: transparent !important;
@@ -279,6 +286,17 @@
 				-webkit-touch-callout: none;
 				-webkit-user-select: none;
 				user-select: none;
+			}
+
+			/* Force override on mobile when scrolling */
+			.nav-links.scrolling-override a {
+				color: var(--text-secondary) !important;
+				background: transparent !important;
+			}
+
+			.nav-links.scrolling-override a.active {
+				color: var(--text-primary) !important;
+				background: rgba(255, 255, 255, 0.1) !important;
 			}
 		}
 
@@ -993,6 +1011,7 @@
 	<script>
 		// Navigation state variables
 		let isScrollingToTarget = false;
+		let scrollOverrideTimeout = null;
 
 		// Mobile viewport height calculation
 		function setMobileVH() {
@@ -1063,11 +1082,24 @@
 
 		// Handle scroll events - IMMEDIATE and aggressive
 		function handleScroll() {
+			const navLinks = document.querySelector('.nav-links');
+
+			// IMMEDIATELY add override class to force visual reset
+			navLinks.classList.add('scrolling-override');
+
+			// Clear any existing timeout
+			if (scrollOverrideTimeout) {
+				clearTimeout(scrollOverrideTimeout);
+			}
+
+			// Keep override active for a bit, then remove it
+			scrollOverrideTimeout = setTimeout(() => {
+				navLinks.classList.remove('scrolling-override');
+			}, 500);
+
 			// IMMEDIATELY clear focus from all navigation links on any scroll
 			document.querySelectorAll('.nav-links a').forEach(link => {
-				if (document.activeElement === link) {
-					link.blur();
-				}
+				link.blur();
 			});
 
 			// Update navbar scroll effect immediately
@@ -1108,6 +1140,8 @@
 
 		// Initialize navigation system
 		function initializeNavigation() {
+			const navLinks = document.querySelector('.nav-links');
+
 			// Set up click handlers for navigation links
 			document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 				anchor.addEventListener('click', function (e) {
@@ -1116,25 +1150,46 @@
 					scrollToSection(targetId);
 				});
 
-				// On mobile, clear focus immediately after touch
+				// On mobile, try to clear focus after a delay
 				anchor.addEventListener('touchend', function (e) {
 					setTimeout(() => {
 						this.blur();
-					}, 100);
+					}, 150);
 				});
 			});
 
 			// Set up scroll event listener
 			window.addEventListener('scroll', handleScroll, { passive: true });
 
-			// Additional touch scroll handler for mobile
-			window.addEventListener('touchmove', () => {
+			// Additional touch scroll handler for mobile - immediately apply override
+			window.addEventListener('touchmove', (e) => {
+				navLinks.classList.add('scrolling-override');
 				// Clear focus from any nav links when touch scrolling
 				document.querySelectorAll('.nav-links a').forEach(link => {
-					if (document.activeElement === link) {
-						link.blur();
-					}
+					link.blur();
 				});
+
+				// Clear any existing timeout
+				if (scrollOverrideTimeout) {
+					clearTimeout(scrollOverrideTimeout);
+				}
+
+				// Keep override active during touch
+				scrollOverrideTimeout = setTimeout(() => {
+					navLinks.classList.remove('scrolling-override');
+				}, 300);
+			}, { passive: true });
+
+			// Also handle touchstart to prepare for potential scrolling
+			window.addEventListener('touchstart', (e) => {
+				// If the touch is not on a nav link, prepare to clear focus
+				if (!e.target.closest('.nav-links a')) {
+					setTimeout(() => {
+						document.querySelectorAll('.nav-links a').forEach(link => {
+							link.blur();
+						});
+					}, 100);
+				}
 			}, { passive: true });
 
 			// Set initial active state
