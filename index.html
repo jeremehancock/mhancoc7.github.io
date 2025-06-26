@@ -243,18 +243,7 @@
 
 		.menu-button {
 			display: none;
-			background: none;
-			border: none;
-			color: var(--text-primary);
-			cursor: pointer;
-			font-size: 1.5rem;
-			padding: 0.5rem;
-			border-radius: 8px;
-			transition: all 0.3s ease;
-		}
-
-		.menu-button:hover {
-			background: rgba(255, 255, 255, 0.1);
+			/* Hide menu button completely */
 		}
 
 		/* Container */
@@ -784,8 +773,20 @@
 			}
 
 			.nav-container {
-				justify-content: flex-end;
-				/* Align menu button to the right on mobile */
+				justify-content: center;
+				/* Center the nav links on mobile too */
+			}
+
+			.nav-links {
+				gap: 1rem;
+				/* Reduce gap on mobile for better spacing */
+			}
+
+			.nav-links a {
+				padding: 0.5rem 0.8rem;
+				/* Slightly smaller padding on mobile */
+				font-size: 0.9rem;
+				/* Slightly smaller text on mobile */
 			}
 
 			.hero {
@@ -798,46 +799,8 @@
 				/* Smaller offset for mobile with shorter navbar */
 			}
 
-			.menu-button {
-				display: block;
-			}
-
 			.projects-grid {
 				grid-template-columns: 1fr;
-			}
-
-			.nav-links {
-				position: fixed;
-				top: 60px;
-				/* Match initial navbar height */
-				right: -100%;
-				flex-direction: column;
-				gap: 0;
-				background: rgba(10, 10, 10, 0.95);
-				backdrop-filter: blur(20px);
-				width: 280px;
-				height: calc(var(--mobile-vh, 1vh) * 100 - 60px);
-				padding: 2rem 0;
-				transition: right 0.3s ease, top 0.3s ease;
-				/* Add transition for top */
-				border-left: var(--border-glass);
-			}
-
-			.nav-links.scrolled {
-				top: 55px;
-				/* Match scrolled navbar height */
-				height: calc(var(--mobile-vh, 1vh) * 100 - 55px);
-			}
-
-			.nav-links.active {
-				right: 0;
-			}
-
-			.nav-links a {
-				display: block;
-				padding: 1rem 2rem;
-				width: 100%;
-				border-radius: 0;
 			}
 
 			.hero-image-wrapper {
@@ -914,9 +877,6 @@
 		<!-- Navigation -->
 		<nav class="navbar">
 			<div class="nav-container">
-				<button class="menu-button" aria-label="Toggle menu">
-					<i class="fas fa-bars"></i>
-				</button>
 				<ul class="nav-links">
 					<li><a href="#contact">Contact</a></li>
 					<li><a href="#projects">Projects</a></li>
@@ -1023,13 +983,8 @@
 		// Navbar scroll effect
 		function handleNavbarScroll() {
 			const navbar = document.querySelector('.navbar');
-			const navLinks = document.querySelector('.nav-links');
 			const scrolled = window.scrollY > 50;
 			navbar.classList.toggle('scrolled', scrolled);
-			// Also apply scrolled class to nav-links for mobile positioning
-			if (navLinks) {
-				navLinks.classList.toggle('scrolled', scrolled);
-			}
 		}
 
 		async function loadResumeData() {
