@@ -1011,58 +1011,78 @@
 		}
 
 		// Scroll spy functionality
+		let lockedActiveLink = null; // Store which link should stay active
+		let lockTimeout = null;
+
 		function updateActiveNavLink() {
+			// If we have a locked active link, don't change anything
+			if (lockedActiveLink) return;
+
 			const sections = ['contact', 'projects', 'resume'];
 			const navLinks = document.querySelectorAll('.nav-links a');
-			const scrollPosition = window.scrollY;
-			const viewportMiddle = scrollPosition + (window.innerHeight / 2);
+			const scrollPosition = window.scrollY + 200;
 
-			let activeSection = 'contact'; // Default to contact
-			let minDistance = Infinity;
+			let activeSection = 'contact';
 
-			// Find the section closest to the middle of viewport
 			sections.forEach(sectionId => {
 				const section = document.getElementById(sectionId);
 				if (section) {
 					const sectionTop = section.offsetTop;
-					const sectionMiddle = sectionTop + (section.offsetHeight / 2);
-					const distance = Math.abs(viewportMiddle - sectionMiddle);
+					const sectionBottom = sectionTop + section.offsetHeight;
 
-					if (distance < minDistance) {
-						minDistance = distance;
+					if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
 						activeSection = sectionId;
 					}
 				}
 			});
 
-			// Force clear ALL active states first - be very explicit
+			// Clear all active states
 			navLinks.forEach(link => {
 				link.classList.remove('active');
 			});
 
-			// Add active class to exactly one link
-			navLinks.forEach(link => {
-				if (link.getAttribute('href') === `#${activeSection}`) {
-					link.classList.add('active');
-				}
-			});
+			// Set the active one
+			const targetLink = document.querySelector(`.nav-links a[href="#${activeSection}"]`);
+			if (targetLink) {
+				targetLink.classList.add('active');
+			}
 		}
 
-		// Clear all active states helper function
-		function clearAllActiveStates() {
-			document.querySelectorAll('.nav-links a').forEach(link => {
-				link.classList.remove('active');
+		function setActiveLink(link) {
+			// Clear all first
+			document.querySelectorAll('.nav-links a').forEach(l => {
+				l.classList.remove('active');
 			});
+
+			// Set this one active
+			link.classList.add('active');
+
+			// Lock this link as active
+			lockedActiveLink = link;
+
+			// Clear any existing timeout
+			if (lockTimeout) {
+				clearTimeout(lockTimeout);
+			}
+
+			// Unlock after delay (longer on mobile)
+			const isMobile = window.innerWidth <= 768;
+			const delay = isMobile ? 3000 : 1500;
+
+			lockTimeout = setTimeout(() => {
+				lockedActiveLink = null;
+				updateActiveNavLink(); // Update to correct state after unlock
+			}, delay);
 		}
 
-		// Debounced scroll handler to prevent rapid updates
+		// Debounced scroll handler
 		let scrollTimeout;
 		function handleScroll() {
 			clearTimeout(scrollTimeout);
 			scrollTimeout = setTimeout(() => {
 				handleNavbarScroll();
 				updateActiveNavLink();
-			}, 100);
+			}, 150);
 		}
 
 		async function loadResumeData() {
@@ -1198,8 +1218,11 @@
 						forceScrollToTop();
 						// Initialize animations after content is shown
 						initializeAnimations();
-						// Initialize scroll spy
-						updateActiveNavLink();
+						// Set initial active state
+						const contactLink = document.querySelector('.nav-links a[href="#contact"]');
+						if (contactLink) {
+							setActiveLink(contactLink);
+						}
 					});
 				}, 300);
 			}, 1200);
@@ -1237,8 +1260,13 @@
 			// Initialize page
 			initializePage();
 
-			// Initialize scroll spy on page load
-			updateActiveNavLink();
+			// Set initial active state
+			setTimeout(() => {
+				const contactLink = document.querySelector('.nav-links a[href="#contact"]');
+				if (contactLink) {
+					setActiveLink(contactLink);
+				}
+			}, 100);
 
 			// Use debounced scroll handler
 			window.addEventListener('scroll', handleScroll);
@@ -1268,27 +1296,17 @@
 					e.preventDefault();
 					const target = document.querySelector(this.getAttribute('href'));
 					if (target) {
-						// Clear all active states and set this one immediately
-						clearAllActiveStates();
-						this.classList.add('active');
+						// Lock this link as active (prevents scroll spy from changing it)
+						setActiveLink(this);
 
-						// Calculate precise scroll position
+						// Calculate scroll position
 						const navbarHeight = document.querySelector('.navbar').offsetHeight;
 						const targetPosition = target.offsetTop - navbarHeight + 80;
-
-						// Disable scroll spy temporarily during smooth scroll
-						window.removeEventListener('scroll', handleScroll);
 
 						window.scrollTo({
 							top: targetPosition,
 							behavior: 'smooth'
 						});
-
-						// Re-enable scroll spy after smooth scroll completes
-						setTimeout(() => {
-							window.addEventListener('scroll', handleScroll);
-							updateActiveNavLink(); // Final update to ensure correct state
-						}, 1000);
 					}
 				});
 			});
@@ -1299,7 +1317,11 @@
 			// Final scroll to top after everything is loaded
 			setTimeout(() => {
 				forceScrollToTop();
-				updateActiveNavLink(); // Update active nav after final positioning
+				// Set initial active state after final positioning
+				const contactLink = document.querySelector('.nav-links a[href="#contact"]');
+				if (contactLink) {
+					setActiveLink(contactLink);
+				}
 			}, 100);
 		});
 
