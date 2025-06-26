@@ -612,23 +612,37 @@
 			document.querySelector('.loading').style.display = 'none';
 			document.getElementById('content').classList.remove('hidden');
 
-			// Force scroll to top on mobile after content loads - multiple attempts for reliability
-			const scrollToTop = () => {
+			// Comprehensive mobile scroll fix
+			const forceScrollTop = () => {
+				// Multiple scroll methods for maximum compatibility
+				window.scrollTo(0, 0);
 				window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
 				document.documentElement.scrollTop = 0;
 				document.body.scrollTop = 0;
+
+				// Force viewport recalculation on mobile
+				if (window.innerWidth <= 768) {
+					window.dispatchEvent(new Event('resize'));
+					// Force a layout recalculation
+					document.body.style.height = '100%';
+					document.body.offsetHeight; // Force reflow
+					document.body.style.height = '';
+				}
 			};
 
-			// Immediate scroll
-			scrollToTop();
+			// Immediate attempts
+			forceScrollTop();
 
-			// Additional scroll attempts with different timings
+			// Multiple timing attempts for mobile reliability
 			requestAnimationFrame(() => {
-				scrollToTop();
-				setTimeout(scrollToTop, 50);
-				setTimeout(scrollToTop, 150);
-				setTimeout(scrollToTop, 300);
+				forceScrollTop();
 			});
+
+			setTimeout(forceScrollTop, 10);
+			setTimeout(forceScrollTop, 50);
+			setTimeout(forceScrollTop, 100);
+			setTimeout(forceScrollTop, 200);
+			setTimeout(forceScrollTop, 500);
 
 			// Initialize intersection observer for animations
 			const observerOptions = {
