@@ -62,8 +62,9 @@
 			overflow-x: hidden;
 			-webkit-font-smoothing: antialiased;
 			-moz-osx-font-smoothing: grayscale;
-			/* Ensure proper initial positioning */
 			position: relative;
+			padding-top: 80px;
+			/* Account for fixed navbar */
 		}
 
 		/* Animated Background */
@@ -266,6 +267,10 @@
 			position: relative;
 			background: var(--gradient-bg);
 			overflow: hidden;
+			margin-top: -80px;
+			/* Offset the body padding */
+			padding-top: 80px;
+			/* Add it back to maintain spacing */
 		}
 
 		.hero::before {
@@ -784,6 +789,16 @@
 				padding: 0 1rem;
 			}
 
+			body {
+				padding-top: 80px;
+			}
+
+			.hero {
+				margin-top: -80px;
+				padding-top: 80px;
+				min-height: 100vh;
+			}
+
 			.menu-button {
 				display: block;
 			}
@@ -1084,22 +1099,12 @@
 
 			// Hide loading screen and show content
 			setTimeout(() => {
-				// Ensure we're at the top before showing content
-				window.scrollTo(0, 0);
-				document.documentElement.scrollTop = 0;
-				document.body.scrollTop = 0;
-
 				document.querySelector('.loading').style.display = 'none';
 				document.getElementById('content').classList.remove('hidden');
 
-				// Force another scroll to top after content is visible
-				requestAnimationFrame(() => {
-					window.scrollTo(0, 0);
-				});
-
 				// Initialize intersection observer for animations
 				initializeAnimations();
-			}, 1500);
+			}, 1000);
 		}
 
 		function initializeAnimations() {
@@ -1125,10 +1130,13 @@
 
 		// Initialize the page when DOM is loaded
 		document.addEventListener('DOMContentLoaded', () => {
-			// Force scroll to top immediately
+			// Prevent scroll restoration
+			if ('scrollRestoration' in history) {
+				history.scrollRestoration = 'manual';
+			}
+
+			// Ensure we start at the top
 			window.scrollTo(0, 0);
-			document.documentElement.scrollTop = 0;
-			document.body.scrollTop = 0;
 
 			initializePage();
 
@@ -1183,13 +1191,6 @@
 						});
 					}
 				});
-			});
-
-			// Additional fix for mobile scroll issues
-			window.addEventListener('load', () => {
-				setTimeout(() => {
-					window.scrollTo(0, 0);
-				}, 100);
 			});
 
 			// Prevent scroll restoration
