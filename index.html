@@ -295,7 +295,6 @@
 
 			.nav-links.scrolling-override a.active {
 				color: var(--text-primary) !important;
-				background: rgba(255, 255, 255, 0.1) !important;
 			}
 		}
 
@@ -1050,9 +1049,9 @@
 			const documentHeight = document.documentElement.scrollHeight;
 			const navbarHeight = 60;
 
-			// Larger offset to ensure we're well into a section before it becomes active
+			// Much larger offset to ensure we're well into a section before it becomes active
 			// This prevents the previous section from being visible when switching
-			const offset = navbarHeight + Math.min(windowHeight * 0.4, 300);
+			const offset = navbarHeight + Math.min(windowHeight * 0.6, 500);
 
 			// If we're near the bottom of the page, always show the last section
 			if (scrollPosition + windowHeight >= documentHeight - 100) {
