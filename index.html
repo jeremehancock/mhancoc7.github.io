@@ -961,8 +961,6 @@
 	<script>
 		// Navigation state variables
 		let scrollTimeout = null;
-		let lastActiveSection = null;
-		let clickTimeout = null;
 
 		// Mobile viewport height calculation
 		function setMobileVH() {
@@ -979,11 +977,6 @@
 
 		// Set active navigation link (single source of truth)
 		function setActiveNavLink(activeSection) {
-			// Remove the lastActiveSection check temporarily to ensure updates always happen
-			// if (lastActiveSection === activeSection) return;
-
-			lastActiveSection = activeSection;
-
 			const { navLinks } = getNavigationElements();
 
 			// Use requestAnimationFrame to ensure atomic DOM updates
@@ -1004,75 +997,54 @@
 					activeLink.classList.add('active');
 				}
 
-				// Debug logging (remove this later)
+				// Debug logging
 				console.log(`Active section set to: ${activeSection}`);
 			});
 		}
 
 		// Determine which section should be active based on scroll position
 		function getActiveSection() {
-			const { sections } = getNavigationElements();
+			const sections = ['contact', 'projects', 'resume'];
 			const scrollPosition = window.pageYOffset;
 			const windowHeight = window.innerHeight;
 			const documentHeight = document.documentElement.scrollHeight;
 			const navbarHeight = 60;
+			const offset = navbarHeight + 100; // Offset for when to switch sections
 
-			// Debug logging
-			console.log(`Scroll position: ${scrollPosition}, Window height: ${windowHeight}`);
+			console.log(`Scroll position: ${scrollPosition}`);
 
 			// If we're near the bottom of the page, always show the last section
-			if (scrollPosition + windowHeight >= documentHeight - 100) {
+			if (scrollPosition + windowHeight >= documentHeight - 50) {
 				console.log('Near bottom, returning resume');
-				return sections[sections.length - 1];
+				return 'resume';
 			}
 
-			// If we're at the very top, always show the first section
-			if (scrollPosition < 100) {
-				console.log('At top, returning contact');
-				return sections[0];
-			}
+			// Simple approach: find which section we've scrolled past
+			let activeSection = 'contact'; // default
 
-			// Check each section and find which one is most prominently displayed
-			let activeSection = sections[0];
-			let bestScore = -1;
-
-			sections.forEach(sectionId => {
+			for (let i = sections.length - 1; i >= 0; i--) {
+				const sectionId = sections[i];
 				const section = document.getElementById(sectionId);
-				if (!section) return;
 
-				const rect = section.getBoundingClientRect();
-				const sectionTop = rect.top;
-				const sectionBottom = rect.bottom;
-				const sectionHeight = rect.height;
+				if (section) {
+					const sectionTop = section.offsetTop;
+					console.log(`Section ${sectionId} top: ${sectionTop}, scroll + offset: ${scrollPosition + offset}`);
 
-				// Calculate how much of the section is visible
-				const visibleTop = Math.max(sectionTop, navbarHeight);
-				const visibleBottom = Math.min(sectionBottom, windowHeight);
-				const visibleHeight = Math.max(0, visibleBottom - visibleTop);
-				const visibilityRatio = sectionHeight > 0 ? visibleHeight / sectionHeight : 0;
-
-				// Prefer sections that have their top part visible (within first 40% of viewport)
-				const sectionTopInViewport = sectionTop <= windowHeight * 0.4;
-				const topBonus = sectionTopInViewport ? 0.3 : 0;
-
-				const combinedScore = visibilityRatio + topBonus;
-
-				console.log(`Section ${sectionId}: visibility=${visibilityRatio.toFixed(2)}, topBonus=${topBonus}, score=${combinedScore.toFixed(2)}`);
-
-				// If this section has a better score and is reasonably visible
-				if (combinedScore > bestScore && visibilityRatio > 0.2) {
-					bestScore = combinedScore;
-					activeSection = sectionId;
+					// If we've scrolled past this section's top (minus offset), this is the active section
+					if (scrollPosition + offset >= sectionTop) {
+						activeSection = sectionId;
+						console.log(`Active section determined: ${activeSection}`);
+						break;
+					}
 				}
-			});
+			}
 
-			console.log(`Best section: ${activeSection} with score: ${bestScore.toFixed(2)}`);
 			return activeSection;
 		}
 
 		// Handle scroll events
 		function handleScroll() {
-			console.log('Scroll event fired'); // Debug logging
+			console.log('Scroll event fired');
 
 			// Clear any existing timeout
 			if (scrollTimeout) {
@@ -1084,9 +1056,9 @@
 			const scrolled = window.pageYOffset > 50;
 			navbar.classList.toggle('scrolled', scrolled);
 
-			// Always update active section based on scroll position - no blocking
+			// Always update active section - no blocking whatsoever
 			scrollTimeout = setTimeout(() => {
-				console.log('Scroll timeout fired, updating active section');
+				console.log('Updating active section from scroll');
 				const activeSection = getActiveSection();
 				setActiveNavLink(activeSection);
 			}, 50);
@@ -1097,21 +1069,16 @@
 			const targetElement = document.getElementById(targetId);
 			if (!targetElement) return;
 
-			console.log(`Clicking link to scroll to: ${targetId}`); // Debug logging
+			console.log(`Clicking link to scroll to: ${targetId}`);
 
-			// Clear any existing timeout
-			if (clickTimeout) {
-				clearTimeout(clickTimeout);
-			}
-
-			// Immediately set the clicked link as active (this will clear all others)
+			// Immediately set the clicked link as active
 			setActiveNavLink(targetId);
 
 			// Calculate scroll position
 			const navbarHeight = document.querySelector('.navbar').offsetHeight;
 			const targetPosition = targetElement.offsetTop - navbarHeight - 20;
 
-			console.log(`Scrolling to position: ${targetPosition}`); // Debug logging
+			console.log(`Scrolling to position: ${targetPosition}`);
 
 			// Perform smooth scroll
 			window.scrollTo({
@@ -1119,8 +1086,7 @@
 				behavior: 'smooth'
 			});
 
-			// Don't block scroll spy - let it take over immediately
-			// Remove any delays or blocking
+			// No blocking - let scroll spy take over immediately
 		}
 
 		// Initialize navigation system
@@ -1149,22 +1115,15 @@
 				history.scrollRestoration = 'manual';
 			}
 
-			// Clear all timeouts
+			// Clear scroll timeout
 			if (scrollTimeout) {
 				clearTimeout(scrollTimeout);
 				scrollTimeout = null;
-			}
-			if (clickTimeout) {
-				clearTimeout(clickTimeout);
-				clickTimeout = null;
 			}
 
 			window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
 			document.documentElement.scrollTop = 0;
 			document.body.scrollTop = 0;
-
-			// Reset navigation state
-			lastActiveSection = null;
 
 			// Force layout recalculation
 			document.body.offsetHeight;
