@@ -250,14 +250,36 @@
 			width: 80%;
 		}
 
-		/* Ensure focus states don't interfere with active states */
+		/* Aggressive focus state management for mobile */
 		.nav-links a:focus {
 			outline: none;
 		}
 
+		/* Ensure focused but non-active links appear normal */
 		.nav-links a:focus:not(.active) {
-			color: var(--text-secondary);
-			background: transparent;
+			color: var(--text-secondary) !important;
+			background: transparent !important;
+		}
+
+		.nav-links a:focus:not(.active)::before {
+			width: 0 !important;
+		}
+
+		/* Mobile/touch specific focus handling */
+		@media (hover: none) and (pointer: coarse) {
+			.nav-links a:focus:not(.active) {
+				color: var(--text-secondary) !important;
+				background: transparent !important;
+				transform: none !important;
+			}
+
+			/* Remove any lingering touch highlights */
+			.nav-links a {
+				-webkit-tap-highlight-color: transparent;
+				-webkit-touch-callout: none;
+				-webkit-user-select: none;
+				user-select: none;
+			}
 		}
 
 		.menu-button {
@@ -980,15 +1002,20 @@
 
 		// Set active navigation link (single source of truth)
 		function setActiveNavLink(activeSection) {
-			// Clear ALL active states AND remove focus from all nav links
+			// Clear ALL active states AND aggressively remove focus from all nav links
 			const allNavLinks = document.querySelectorAll('.nav-links a');
 			allNavLinks.forEach(link => {
 				link.classList.remove('active');
-				// Remove focus to clear any visual focus states from clicked links
+				// Force remove focus - multiple approaches for mobile
 				if (document.activeElement === link) {
 					link.blur();
 				}
+				// Also manually trigger blur to be extra sure
+				link.blur();
 			});
+
+			// Force layout to ensure changes are applied immediately
+			document.body.offsetHeight;
 
 			// Set exactly one active link
 			const activeLink = document.querySelector(`.nav-links a[href="#${activeSection}"]`);
@@ -1036,6 +1063,13 @@
 
 		// Handle scroll events - IMMEDIATE and aggressive
 		function handleScroll() {
+			// IMMEDIATELY clear focus from all navigation links on any scroll
+			document.querySelectorAll('.nav-links a').forEach(link => {
+				if (document.activeElement === link) {
+					link.blur();
+				}
+			});
+
 			// Update navbar scroll effect immediately
 			const navbar = document.querySelector('.navbar');
 			const scrolled = window.pageYOffset > 50;
@@ -1081,10 +1115,27 @@
 					const targetId = this.getAttribute('href').substring(1);
 					scrollToSection(targetId);
 				});
+
+				// On mobile, clear focus immediately after touch
+				anchor.addEventListener('touchend', function (e) {
+					setTimeout(() => {
+						this.blur();
+					}, 100);
+				});
 			});
 
 			// Set up scroll event listener
 			window.addEventListener('scroll', handleScroll, { passive: true });
+
+			// Additional touch scroll handler for mobile
+			window.addEventListener('touchmove', () => {
+				// Clear focus from any nav links when touch scrolling
+				document.querySelectorAll('.nav-links a').forEach(link => {
+					if (document.activeElement === link) {
+						link.blur();
+					}
+				});
+			}, { passive: true });
 
 			// Set initial active state
 			setTimeout(() => {
