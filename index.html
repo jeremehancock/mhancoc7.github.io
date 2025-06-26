@@ -612,10 +612,23 @@
 			document.querySelector('.loading').style.display = 'none';
 			document.getElementById('content').classList.remove('hidden');
 
-			// Force scroll to top on mobile after content loads
-			setTimeout(() => {
-				window.scrollTo(0, 0);
-			}, 100);
+			// Force scroll to top on mobile after content loads - multiple attempts for reliability
+			const scrollToTop = () => {
+				window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+				document.documentElement.scrollTop = 0;
+				document.body.scrollTop = 0;
+			};
+
+			// Immediate scroll
+			scrollToTop();
+
+			// Additional scroll attempts with different timings
+			requestAnimationFrame(() => {
+				scrollToTop();
+				setTimeout(scrollToTop, 50);
+				setTimeout(scrollToTop, 150);
+				setTimeout(scrollToTop, 300);
+			});
 
 			// Initialize intersection observer for animations
 			const observerOptions = {
