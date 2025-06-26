@@ -52,6 +52,9 @@
 		html {
 			scroll-behavior: smooth;
 			scroll-padding-top: 100px;
+			/* Fix mobile scrolling issues */
+			-webkit-text-size-adjust: 100%;
+			-webkit-touch-callout: none;
 		}
 
 		body {
@@ -251,6 +254,8 @@
 		/* Section Styling */
 		section {
 			min-height: 100vh;
+			min-height: 100dvh;
+			/* Dynamic viewport height for mobile */
 			display: flex;
 			align-items: center;
 			padding: 6rem 0;
@@ -261,8 +266,10 @@
 		.hero {
 			position: relative;
 			background: var(--gradient-bg);
-			background-attachment: fixed;
 			overflow: hidden;
+			min-height: 100vh;
+			min-height: 100dvh;
+			/* Dynamic viewport height for mobile */
 		}
 
 		.hero::before {
@@ -781,6 +788,22 @@
 				padding: 0 1rem;
 			}
 
+			/* Fix mobile viewport issues */
+			.hero {
+				min-height: 100vh;
+				min-height: 100dvh;
+			}
+
+			section {
+				min-height: auto;
+				padding: 4rem 0;
+			}
+
+			/* Ensure proper mobile rendering */
+			body {
+				-webkit-overflow-scrolling: touch;
+			}
+
 			.menu-button {
 				display: block;
 			}
@@ -1080,13 +1103,16 @@
 			createParticles();
 
 			// Hide loading screen and show content
+			const isMobile = window.innerWidth <= 768;
+			const loadingDelay = isMobile ? 800 : 1500;
+
 			setTimeout(() => {
 				document.querySelector('.loading').style.display = 'none';
 				document.getElementById('content').classList.remove('hidden');
 
 				// Initialize intersection observer for animations
 				initializeAnimations();
-			}, 1500);
+			}, loadingDelay);
 		}
 
 		function initializeAnimations() {
@@ -1112,6 +1138,11 @@
 
 		// Initialize the page when DOM is loaded
 		document.addEventListener('DOMContentLoaded', () => {
+			// Ensure mobile starts at top
+			if (window.innerWidth <= 768) {
+				window.scrollTo(0, 0);
+			}
+
 			initializePage();
 
 			// Navbar scroll effect
