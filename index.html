@@ -220,6 +220,15 @@
 			border-radius: 8px;
 		}
 
+		.nav-links a.active {
+			color: var(--text-primary);
+			background: rgba(255, 255, 255, 0.1);
+		}
+
+		.nav-links a.active::before {
+			width: 80%;
+		}
+
 		.nav-links a::before {
 			content: '';
 			position: absolute;
@@ -840,6 +849,18 @@
 				/* Even smaller padding on very small screens */
 			}
 
+			.nav-links {
+				gap: 0.5rem;
+				/* Even smaller gap on very small screens */
+			}
+
+			.nav-links a {
+				padding: 0.4rem 0.6rem;
+				/* Smaller padding for very small screens */
+				font-size: 0.85rem;
+				/* Smaller text for very small screens */
+			}
+
 			.hero-text h1 {
 				font-size: 2rem;
 			}
@@ -878,7 +899,7 @@
 		<nav class="navbar">
 			<div class="nav-container">
 				<ul class="nav-links">
-					<li><a href="#contact">Contact</a></li>
+					<li><a href="#contact" class="active">Contact</a></li>
 					<li><a href="#projects">Projects</a></li>
 					<li><a href="#resume">Resumé</a></li>
 				</ul>
@@ -985,6 +1006,35 @@
 			const navbar = document.querySelector('.navbar');
 			const scrolled = window.scrollY > 50;
 			navbar.classList.toggle('scrolled', scrolled);
+		}
+
+		// Scroll spy functionality
+		function updateActiveNavLink() {
+			const sections = ['contact', 'projects', 'resume'];
+			const navLinks = document.querySelectorAll('.nav-links a');
+			const scrollPosition = window.scrollY + 100; // Offset for navbar height
+
+			let activeSection = 'contact'; // Default to contact
+
+			sections.forEach(sectionId => {
+				const section = document.getElementById(sectionId);
+				if (section) {
+					const sectionTop = section.offsetTop;
+					const sectionHeight = section.offsetHeight;
+
+					if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+						activeSection = sectionId;
+					}
+				}
+			});
+
+			// Update active class on nav links
+			navLinks.forEach(link => {
+				link.classList.remove('active');
+				if (link.getAttribute('href') === `#${activeSection}`) {
+					link.classList.add('active');
+				}
+			});
 		}
 
 		async function loadResumeData() {
@@ -1120,6 +1170,8 @@
 						forceScrollToTop();
 						// Initialize animations after content is shown
 						initializeAnimations();
+						// Initialize scroll spy
+						updateActiveNavLink();
 					});
 				}, 300);
 			}, 1200);
@@ -1157,8 +1209,14 @@
 			// Initialize page
 			initializePage();
 
-			// Navbar scroll effect
-			window.addEventListener('scroll', handleNavbarScroll);
+			// Initialize scroll spy on page load
+			updateActiveNavLink();
+
+			// Navbar scroll effect and scroll spy
+			window.addEventListener('scroll', () => {
+				handleNavbarScroll();
+				updateActiveNavLink();
+			});
 
 			// Handle mobile viewport changes
 			window.addEventListener('resize', () => {
@@ -1179,42 +1237,6 @@
 				}, 300);
 			});
 
-			// Mobile menu functionality
-			const menuButton = document.querySelector('.menu-button');
-			const navLinks = document.querySelector('.nav-links');
-
-			menuButton.addEventListener('click', () => {
-				navLinks.classList.toggle('active');
-				const icon = menuButton.querySelector('i');
-				icon.classList.toggle('fa-bars');
-				icon.classList.toggle('fa-times');
-			});
-
-			// Close menu when clicking a link
-			document.querySelectorAll('.nav-links a').forEach(link => {
-				link.addEventListener('click', () => {
-					if (window.innerWidth <= 768) {
-						navLinks.classList.remove('active');
-						const icon = menuButton.querySelector('i');
-						icon.classList.add('fa-bars');
-						icon.classList.remove('fa-times');
-					}
-				});
-			});
-
-			// Close menu when clicking outside
-			document.addEventListener('click', (e) => {
-				if (window.innerWidth <= 768 &&
-					!e.target.closest('.nav-links') &&
-					!e.target.closest('.menu-button') &&
-					navLinks.classList.contains('active')) {
-					navLinks.classList.remove('active');
-					const icon = menuButton.querySelector('i');
-					icon.classList.add('fa-bars');
-					icon.classList.remove('fa-times');
-				}
-			});
-
 			// Smooth scrolling for navigation links
 			document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 				anchor.addEventListener('click', function (e) {
@@ -1225,6 +1247,11 @@
 							behavior: 'smooth',
 							block: 'start'
 						});
+
+						// Update active state after smooth scroll completes
+						setTimeout(() => {
+							updateActiveNavLink();
+						}, 500);
 					}
 				});
 			});
@@ -1235,6 +1262,7 @@
 			// Final scroll to top after everything is loaded
 			setTimeout(() => {
 				forceScrollToTop();
+				updateActiveNavLink(); // Update active nav after final positioning
 			}, 100);
 		});
 
