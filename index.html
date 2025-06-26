@@ -963,6 +963,9 @@
 		let isScrollingProgrammatically = false;
 		let scrollTimeout = null;
 		let lastActiveSection = null;
+		let programmaticScrollTimeout = null;
+		let lastScrollY = 0;
+		let scrollDirection = 'down';
 
 		// Mobile viewport height calculation
 		function setMobileVH() {
@@ -1057,6 +1060,22 @@
 
 		// Handle scroll events
 		function handleScroll() {
+			// Detect scroll direction
+			const currentScrollY = window.pageYOffset;
+			scrollDirection = currentScrollY > lastScrollY ? 'down' : 'up';
+
+			// If user is manually scrolling (significant movement), clear programmatic state
+			if (Math.abs(currentScrollY - lastScrollY) > 10 && !isScrollingProgrammatically) {
+				// Clear any pending programmatic scroll timeout
+				if (programmaticScrollTimeout) {
+					clearTimeout(programmaticScrollTimeout);
+					programmaticScrollTimeout = null;
+				}
+				isScrollingProgrammatically = false;
+			}
+
+			lastScrollY = currentScrollY;
+
 			// Clear any existing timeout
 			if (scrollTimeout) {
 				clearTimeout(scrollTimeout);
@@ -1064,7 +1083,7 @@
 
 			// Update navbar scroll effect immediately
 			const navbar = document.querySelector('.navbar');
-			const scrolled = window.pageYOffset > 50;
+			const scrolled = currentScrollY > 50;
 			navbar.classList.toggle('scrolled', scrolled);
 
 			// Only update active section if we're not in the middle of programmatic scrolling
@@ -1082,6 +1101,11 @@
 			const targetElement = document.getElementById(targetId);
 			if (!targetElement) return;
 
+			// Clear any existing programmatic scroll timeout
+			if (programmaticScrollTimeout) {
+				clearTimeout(programmaticScrollTimeout);
+			}
+
 			// Set flag to prevent scroll spy from interfering
 			isScrollingProgrammatically = true;
 
@@ -1092,19 +1116,44 @@
 			const navbarHeight = document.querySelector('.navbar').offsetHeight;
 			const targetPosition = targetElement.offsetTop - navbarHeight - 20;
 
+			// Store current position to detect when scrolling stops
+			const startPosition = window.pageYOffset;
+
 			// Perform smooth scroll
 			window.scrollTo({
 				top: targetPosition,
 				behavior: 'smooth'
 			});
 
-			// Reset the flag after scrolling is likely complete
+			// Function to check if scrolling has stopped
+			function checkScrollComplete() {
+				const currentPosition = window.pageYOffset;
+				const distanceToTarget = Math.abs(currentPosition - targetPosition);
+
+				// If we're close to the target or scroll position hasn't changed much
+				if (distanceToTarget < 50) {
+					// Reset the flag and update active section based on final position
+					isScrollingProgrammatically = false;
+					const activeSection = getActiveSection();
+					setActiveNavLink(activeSection);
+					return;
+				}
+
+				// Check again in a short interval
+				programmaticScrollTimeout = setTimeout(checkScrollComplete, 100);
+			}
+
+			// Start checking for scroll completion after a short delay
+			programmaticScrollTimeout = setTimeout(checkScrollComplete, 300);
+
+			// Failsafe: always reset after maximum time
 			setTimeout(() => {
-				isScrollingProgrammatically = false;
-				// Update active section based on final position
-				const activeSection = getActiveSection();
-				setActiveNavLink(activeSection);
-			}, 1000); // Adjust timing based on scroll duration
+				if (isScrollingProgrammatically) {
+					isScrollingProgrammatically = false;
+					const activeSection = getActiveSection();
+					setActiveNavLink(activeSection);
+				}
+			}, 2000);
 		}
 
 		// Initialize navigation system
@@ -1133,13 +1182,25 @@
 				history.scrollRestoration = 'manual';
 			}
 
+			// Clear all timeouts
+			if (scrollTimeout) {
+				clearTimeout(scrollTimeout);
+				scrollTimeout = null;
+			}
+			if (programmaticScrollTimeout) {
+				clearTimeout(programmaticScrollTimeout);
+				programmaticScrollTimeout = null;
+			}
+
 			window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
 			document.documentElement.scrollTop = 0;
 			document.body.scrollTop = 0;
 
-			// Reset navigation state
+			// Reset all navigation state
 			isScrollingProgrammatically = false;
 			lastActiveSection = null;
+			lastScrollY = 0;
+			scrollDirection = 'down';
 
 			// Force layout recalculation
 			document.body.offsetHeight;
