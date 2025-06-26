@@ -1049,9 +1049,8 @@
 			const documentHeight = document.documentElement.scrollHeight;
 			const navbarHeight = 60;
 
-			// Much larger offset to ensure we're well into a section before it becomes active
-			// This prevents the previous section from being visible when switching
-			const offset = navbarHeight + Math.min(windowHeight * 0.6, 500);
+			// Moderate offset - enough to hide previous section but not too much space
+			const offset = navbarHeight + 120;
 
 			// If we're near the bottom of the page, always show the last section
 			if (scrollPosition + windowHeight >= documentHeight - 100) {
@@ -1116,18 +1115,17 @@
 			const targetElement = document.getElementById(targetId);
 			if (!targetElement) return;
 
-			console.log(`Scrolling to section: ${targetId}`);
-
 			// Set flag to indicate we're programmatically scrolling
 			isScrollingToTarget = true;
 
-			// Calculate scroll position
+			// Calculate scroll position - synchronized with detection offset
 			const navbarHeight = document.querySelector('.navbar').offsetHeight;
-			const targetPosition = targetElement.offsetTop - navbarHeight - 20;
+			const scrollOffset = navbarHeight + 120; // Same as detection offset
+			const targetPosition = targetElement.offsetTop - scrollOffset;
 
 			// Perform smooth scroll
 			window.scrollTo({
-				top: targetPosition,
+				top: Math.max(0, targetPosition), // Don't scroll above top of page
 				behavior: 'smooth'
 			});
 
