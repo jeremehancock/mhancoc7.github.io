@@ -1004,32 +1004,50 @@
 			const scrollPosition = window.pageYOffset;
 			const windowHeight = window.innerHeight;
 			const documentHeight = document.documentElement.scrollHeight;
+			const navbarHeight = 60;
 
 			// If we're near the bottom of the page, always show the last section
 			if (scrollPosition + windowHeight >= documentHeight - 100) {
 				return sections[sections.length - 1];
 			}
 
-			// Find the section that's most visible in the viewport
-			let activeSection = sections[0]; // default to first section
-			let maxVisibleArea = 0;
+			// If we're at the very top, always show the first section
+			if (scrollPosition < 100) {
+				return sections[0];
+			}
+
+			// Find the section that has its center most visible in the viewport
+			let activeSection = sections[0];
+			let bestScore = -1;
 
 			sections.forEach(sectionId => {
 				const section = document.getElementById(sectionId);
 				if (!section) return;
 
 				const rect = section.getBoundingClientRect();
-				const navbarHeight = 60; // navbar height
+				const sectionTop = rect.top;
+				const sectionBottom = rect.bottom;
+				const sectionCenter = (sectionTop + sectionBottom) / 2;
+				const viewportCenter = windowHeight / 2;
 
-				// Calculate visible area of this section
-				const visibleTop = Math.max(0, navbarHeight - rect.top);
-				const visibleBottom = Math.min(windowHeight, rect.bottom);
+				// Calculate how much of the section is visible
+				const visibleTop = Math.max(sectionTop, navbarHeight);
+				const visibleBottom = Math.min(sectionBottom, windowHeight);
 				const visibleHeight = Math.max(0, visibleBottom - visibleTop);
-				const visibleArea = visibleHeight * rect.width;
+				const sectionHeight = rect.height;
+				const visibilityRatio = sectionHeight > 0 ? visibleHeight / sectionHeight : 0;
 
-				// If this section has more visible area, it should be active
-				if (visibleArea > maxVisibleArea) {
-					maxVisibleArea = visibleArea;
+				// Calculate distance from section center to viewport center (closer is better)
+				const centerDistance = Math.abs(sectionCenter - viewportCenter);
+				const maxDistance = windowHeight;
+				const centerScore = Math.max(0, 1 - centerDistance / maxDistance);
+
+				// Combined score: visibility ratio + center proximity
+				const combinedScore = (visibilityRatio * 0.7) + (centerScore * 0.3);
+
+				// If this section has a better score and is reasonably visible, make it active
+				if (combinedScore > bestScore && visibilityRatio > 0.1) {
+					bestScore = combinedScore;
 					activeSection = sectionId;
 				}
 			});
@@ -1091,9 +1109,6 @@
 
 		// Initialize navigation system
 		function initializeNavigation() {
-			// Set up scroll event listener with passive option for better performance
-			window.addEventListener('scroll', handleScroll, { passive: true });
-
 			// Set up click handlers for navigation links
 			document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 				anchor.addEventListener('click', function (e) {
@@ -1103,10 +1118,12 @@
 				});
 			});
 
-			// Set initial active state
+			// Set up scroll event listener with passive option for better performance
+			window.addEventListener('scroll', handleScroll, { passive: true });
+
+			// Set initial active state - force contact to be active since we're at the top
 			setTimeout(() => {
-				const activeSection = getActiveSection();
-				setActiveNavLink(activeSection);
+				setActiveNavLink('contact');
 			}, 100);
 		}
 
@@ -1130,7 +1147,7 @@
 			// Set contact as active since we're at the top
 			setTimeout(() => {
 				setActiveNavLink('contact');
-			}, 50);
+			}, 10);
 		}
 
 		// Particle animation
