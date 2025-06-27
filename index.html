@@ -240,8 +240,11 @@
 			transition: width 0.3s ease;
 		}
 
-		.nav-links a:hover {
-			color: var(--text-primary);
+		/* Only apply hover effects on devices with true hover capability (desktop with mouse) */
+		@media (hover: hover) and (pointer: fine) {
+			.nav-links a:hover {
+				color: var(--text-primary);
+			}
 		}
 
 		/* Aggressive focus state management for mobile */
@@ -485,24 +488,27 @@
 			z-index: -1;
 		}
 
-		.contact-link:hover::before {
-			left: 0;
-		}
-
-		.contact-link:hover {
-			transform: translateY(-2px);
-			box-shadow: var(--shadow-glass);
-			border-color: var(--accent-primary);
-		}
-
 		.contact-link i {
 			color: var(--accent-primary);
 			transition: all 0.3s ease;
 		}
 
-		.contact-link:hover i {
-			color: white;
-			transform: scale(1.1);
+		/* Only apply hover effects on devices with true hover capability */
+		@media (hover: hover) and (pointer: fine) {
+			.contact-link:hover::before {
+				left: 0;
+			}
+
+			.contact-link:hover {
+				transform: translateY(-2px);
+				box-shadow: var(--shadow-glass);
+				border-color: var(--accent-primary);
+			}
+
+			.contact-link:hover i {
+				color: white;
+				transform: scale(1.1);
+			}
 		}
 
 		/* Section Titles */
@@ -568,16 +574,6 @@
 			border-radius: 20px;
 		}
 
-		.project-card:hover::before {
-			opacity: 0.1;
-		}
-
-		.project-card:hover {
-			transform: translateY(-10px) scale(1.02);
-			box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-			border-color: var(--accent-primary);
-		}
-
 		.project-image {
 			position: relative;
 			height: 250px;
@@ -589,10 +585,6 @@
 			height: 100%;
 			object-fit: cover;
 			transition: all 0.4s ease;
-		}
-
-		.project-card:hover .project-image img {
-			transform: scale(1.1);
 		}
 
 		.project-overlay {
@@ -609,14 +601,31 @@
 			transition: opacity 0.3s ease;
 		}
 
-		.project-card:hover .project-overlay {
-			opacity: 1;
-		}
-
 		.project-overlay i {
 			font-size: 3rem;
 			color: white;
 			animation: bounce 2s infinite;
+		}
+
+		/* Only apply hover effects on devices with true hover capability */
+		@media (hover: hover) and (pointer: fine) {
+			.project-card:hover::before {
+				opacity: 0.1;
+			}
+
+			.project-card:hover {
+				transform: translateY(-10px) scale(1.02);
+				box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+				border-color: var(--accent-primary);
+			}
+
+			.project-card:hover .project-image img {
+				transform: scale(1.1);
+			}
+
+			.project-card:hover .project-overlay {
+				opacity: 1;
+			}
 		}
 
 		@keyframes bounce {
@@ -690,14 +699,17 @@
 			transition: left 0.6s ease;
 		}
 
-		.resume-item:hover::before {
-			left: 100%;
-		}
+		/* Only apply hover effects on devices with true hover capability */
+		@media (hover: hover) and (pointer: fine) {
+			.resume-item:hover::before {
+				left: 100%;
+			}
 
-		.resume-item:hover {
-			transform: translateX(10px);
-			border-color: var(--accent-primary);
-			box-shadow: var(--shadow-glass);
+			.resume-item:hover {
+				transform: translateX(10px);
+				border-color: var(--accent-primary);
+				box-shadow: var(--shadow-glass);
+			}
 		}
 
 		.resume-header {
