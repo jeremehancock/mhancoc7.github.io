@@ -33,6 +33,12 @@
         "value": "linkedin.com/in/jeremehancock",
         "url": "https://linkedin.com/in/jeremehancock",
         "icon": "fab fa-linkedin"
+      },
+      {
+        "type": "website",
+        "value": "dumbprojects.com",
+        "url": "#",
+        "icon": "fas fa-globe"
       }
     ]
   },
@@ -49,7 +55,7 @@
       "image": "images/projects/libretto.png",
       "url": "https://github.com/jeremehancock/Libretto"
     },
-        {
+    {
       "name": "Ludanta",
       "description": "Now Playing on Plex/Jellyfin",
       "image": "images/projects/ludanta-detailed.png",
@@ -141,7 +147,7 @@
       ]
     },
     {
-      "type": "work", 
+      "type": "work",
       "company": "Rackspace",
       "position": "Support Technician",
       "website": "rackspace.com",
@@ -183,9 +189,7 @@
       "institution": "NWOSU",
       "area": "Business Administration",
       "studyType": "B.S.",
-      "highlights": [
-        "Selected as Most Promising E-commerce student by faculty"
-      ]
+      "highlights": ["Selected as Most Promising E-commerce student by faculty"]
     }
   ]
 }
