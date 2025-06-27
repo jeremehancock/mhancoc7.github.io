@@ -36,8 +36,8 @@
       },
       {
         "type": "website",
-        "value": "https://dumbprojects.com",
-        "url": "#",
+        "value": "dumbprojects.com",
+        "url": "https://dumbprojects.com",
         "icon": "fas fa-globe"
       }
     ]
